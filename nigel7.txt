@@ -1,0 +1,23 @@
+; NIGEL 7
+
+         XF         ; no op
+.LOOP1.  XF
+.LOOP2.  XF
+     T .SCRAP. D
+     H .OP1. D      ; load Multiplier
+     C .OP2. D      ; Collate (AND)
+     U .RESLT. D    ; store
+     G .LOOP1. F    ; jump if >= 0
+     E .LOOP2. F    ; jump if < 0
+     ZF             ; stop and ring bell
+
+.SCRAP.  +0
+         +0
+.OP1.    P123F
+     S234D
+.OP2.    A345F
+     G456D
+.RESLT.  +0
+         +0
+         &27;
+         B10111111
