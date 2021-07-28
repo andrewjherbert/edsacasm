@@ -1,7 +1,7 @@
 EDSAC TEST PROGRAM ASSEMBLER
 ============================
 
-Andrew Herbert - 25/07/2021
+Andrew Herbert - 28/07/2021
 
 The EDSAC TEST PROGRAM ASSEMBLER (edsacasm) is a simple assembler for writing short test
 programs to be loaded into EDSAC store tank 0 using the Signal Sequence Injector (SSI).
