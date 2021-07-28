@@ -162,7 +162,5 @@ basic mechanism is to connect a computer, e.g., a laptop to a USB port on the SS
 connect to the SSI using minicom and then upload a file of binary numbers produce by the
 assembler running with out the -list option.
 
-Andrew Herbert 24 July 2021
-
 
 
