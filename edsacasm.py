@@ -230,7 +230,6 @@ def double(f, i):
         elif digits == 0:
             syntaxError(f, "no digits found after D")
         else:
-            print(format(value, "020b"))
             store[cpa] = value >> 18
             store[cpa+1] = value & (2**18-1)
             cpa += 2
