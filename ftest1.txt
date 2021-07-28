@@ -1,0 +1,41 @@
+; FUNCTION TEST 1 - JUMPS
+
+.START.
+
+			TD				; Clear Acc
+
+;  01: jump if positive on 0
+
+			E ;+2 F     	; 0 >= 0?
+			Z1F				; fail
+
+; 02: jump if postive on MAXPOS
+
+			A .MAXPOS. D
+			E ;+2 F			; MAXPOS >= 0?
+			Z2F				; fail
+
+; 03: jump if positive on MAXNEG, jump if negative on MAXNEG
+
+			TD				; clear Acc
+			A .MAXNEG. D
+			E ; +2 F		; MAXNEG >= 0?
+			G ; +2 F; 		; MAXNEG < 0
+			Z3F 			; fail
+
+; 04: jump if negative on 0
+			TD				; clear Acc
+			G ;+2 F         ; 0 < 0?
+			E ;+2 F
+			Z4F
+
+; 05: jump if negative on MAXPOS
+			A .MAXPOS. D
+			G ;+2 F			; MAXPOS < 0
+			E ;+2 F
+			Z5F
+
+       		E .START. F     ; go back to beginning
+
+.MAXPOS.	D01111111111111111111111111111111111
+.MAXNEG.	D10000000000000000000000000000000000
