@@ -98,9 +98,13 @@ constructing words containing sub-fields.  For example, &7890 represents the bin
 11101000.
 
 4) a short binary number consisting of the letter B followed by a sequence of binary
-digits (1 and 0) e.g., B1011100011.
+digits (1 and 0) e.g., B1011100011110000111000001000. 
 
-5) an order consisting of a single function letter (e.g., A, S, H, etc), and address and a
+5) a long binary number consisting of the letter D followed by a sequence of binary
+digits (1 and 0) e.g., D1011100011. Note that because the SSI loads 18
+bit words the sandwich digit is correctly loaded.
+
+6) an order consisting of a single function letter (e.g., A, S, H, etc), and address and a
 single length designator letter - F for short number operations, D for long number
 operations.
 
@@ -108,9 +112,12 @@ The assembler recognises all the hardware defined operations plus P as a pseudo 
 with code 0.  The  P code provides another way to enter numbers as is done in programs
 intended to be loaded by initial orders.
 
-An address can be either an absolute address expressed as a decimal integer in the range
-0-63 or a reference to a label.  If the address field is omitted from an order, 0 is
-assumed.
+An address can be an absolute address expressed as a decimal integer in the range
+0-63, a reference to a label or a relative address.  If the address field is omitted from 
+an order, 0 is assumed.  A relative address takes the form ;+nn or ;-nn where nn is a
+decimal integer.  The formed address is the address of the current instruction plus or
+minus the integer as appropriate.  The ;-1 represents the previous location to the
+current instruction and ;+1 the next instruction.
 
 Labels consist or arbitrary text bracketed by full stops (.), as in .label. .1234. etc.
 

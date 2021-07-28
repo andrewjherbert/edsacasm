@@ -102,6 +102,8 @@ def assemble(f, i, p): # assemble next line if any
             i = octal(f, i)
         elif f[i] == 'B':
             i = binary(f, i)
+        elif f[i] == 'D':
+            i = double(f, i)
         elif f[i].isalpha():
             i = order(f, i, p)
         else:
@@ -141,10 +143,11 @@ def label(f, i, p): # assemble label
 def number(f, i):
     global cpa, store
     #print("***Number", i, '"', f[i], '"')
+    sign = f[i]
     j = i+1
     while f[j].isdigit():
         j += 1
-    value = int(f[i:j])
+    value = int(f[i:j]) * +1 if sign == '+' else -1
     if value < -65536 or value > 65535:
         syntaxError(f, "number greater than 17 bits long")
     store[cpa] = value
@@ -195,12 +198,42 @@ def binary(f, i):
             i += 1
             value = (value << 1) +1
             if value >= 65536:
-                syntaxError(f, "binary larger than 17 bits long")
+                syntaxError(f, "binary larger than 17 bits")
         elif digits == 0:
             syntaxError(f, "no digits found after B")
         else:
+            print(value, format(value, "020b"))
             store[cpa] = value
             cpa += 1
+            return i
+
+# ----double ---- #
+
+def double(f, i):
+    global cpa, store
+    if (cpa & 1) == 1:
+    	cpa += 1 # align on long word boundary
+    i += 1 # skip over D
+    digits = 0
+    value = 0
+    while True:
+        if f[i] == '0':
+            value = value << 1
+            digits += 1
+            i += 1
+        elif f[i] == '1':
+            digits += 1
+            i += 1
+            value = (value << 1) + 1
+            if value >= 2**36:
+                syntaxError(f, "double larger than 35 bits")
+        elif digits == 0:
+            syntaxError(f, "no digits found after D")
+        else:
+            print(format(value, "020b"))
+            store[cpa] = value >> 18
+            store[cpa+1] = value & (2**18-1)
+            cpa += 2
             return i
 
 # ---- order ---- #
@@ -235,7 +268,7 @@ def address(f, i, p):
         while f[j].isdigit():
             j += 1
         addr = int(f[i:j])
-        if addr > 1023:
+        if addr > 2047: # allow addresses to spill into spare bit
             syntaxError(f, "address field too large")
         store[cpa] += (addr << 1)
         #print("***Result =", addr)
@@ -250,15 +283,35 @@ def address(f, i, p):
             else:
                 syntaxError(f, "undefined label - " + name)
         return j
+    elif f[i] == ';':
+        return relative(f, i+1, p)
     else:
         #print("***Result =", 0)
         return i
+
+# ---- relative ---- #
+
+def relative(f, i, p):
+    global cpa, store
+    sign = f[i]
+    value = 0
+    if not (sign == '+' or  sign == '-'):
+        syntaxError(f, "expected + or - after ;")
+    i += 1
+    while f[i].isdigit():
+    	value = value * 10 + ord(f[i]) - ord('0')
+    	i += 1
+    addr = cpa + value * (+1 if sign == '+' else -1)
+    if addr < 0 or addr > 63:
+        syntaxError(f, "relative address out of range 0-63")
+    store[cpa] += (addr << 1)
+    return i
 
 # ---- newline ---- #
 
 def newline(f, i):
     global lineNo, lineStart
-    print("***Newline", lineNo, f[lineStart:i]);
+    #print("***Newline", lineNo, f[lineStart:i]);
     lineNo += 1
     lineStart = i+1
     return lineStart
@@ -278,7 +331,7 @@ def syntaxError(f, reason):
     global lineNo, lineStart
     msg = "Syntax error in line " + str(lineNo) + ": " + reason + '\n'
     lineEnd = f.index('\n', lineStart)
-    msg = msg + f[lineStart:lineEnd-1]
+    msg = msg + f[lineStart:lineEnd]
     fail(msg)
 
  # ---- dumpStore, listStore ---- #
@@ -287,7 +340,8 @@ def dumpStore(f):
     #print("***Dumping store")
     global cpa, store
     for i in range(64):
-        bits = '0'+format(store[i], "017b")[::-1]
+        value = store[i] & 131071
+        bits = ('0' if store[i] & 2**17 == 0 else '1')+format(value, "017b")[::-1]
         f.write(bits)
         f.write('\n')
 
@@ -295,10 +349,11 @@ def listStore(f):
     #print("***Listing store")
     global cpa, store
     for i in range(64):
+        value = store[i] & 131071
         f.write("%2d " % i)
-        bits = '0' + format(store[i], "017b")[::-1]
+        bits = ('0' if store[i] & 2**17 == 0 else '1') + format(value, "017b")[::-1]
         f.write(bits)
-        fn = functionCodes[store[i] >> 12]
+        fn = functionCodes[(store[i] >> 12) & 31]
         ad = str((store[i] >> 1) & 1023)
         lg = "D" if (store[i] & 1 == 1) else "F"
         f.write("    " + fn + ad + lg + '\n')
@@ -306,7 +361,7 @@ def listStore(f):
 # ---- Error handling ---- #
 
 def fail(msg):
-    sys.stderr.write(msg)
+    sys.stderr.write(msg + "\n")
     sys.exit(1)
 
 # ---- Decode arguments ---- #
