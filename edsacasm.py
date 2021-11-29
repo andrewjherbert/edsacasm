@@ -1,22 +1,28 @@
-# EDSAC Test Program Assembler - Andrew Herbert - 25 July 2021
+# EDSAC Test Program Assembler - Andrew Herbert - 19 October 2021
 
 # Generates binary images for loading into the bottom EDSAC store tank
 # (locations 0-63) using Tom Toth's SSI unit.
 
 
-# Usage: edsacasm.py [-h] [-list] [-infile INFILE] [-outfile OUTFILE]
+# Usage: edsacasm.py infile|- [-h] [-list]
+# -list option produces annotated output.  Without -list output is
+# suitable for loading via ssiupload.
 
 # Syntax
 #
 # <program> = <line> [<line>*]
-# <line> = [<label>] []<word>] [comment]
+# <line> = [@] [<label>] [<word>] [comment]
 # <label> = .<name>.
 # <name> = alpha numeric sequence
 # <word> = <number> | <order>
-# <number> = +<digits> | -<digits> | &<digits> | B<binary digits>
-# <order> = <function letter> []<address>] F | <function letter> <address> D
+# <number> = +<digits> | -<digits> | &<digits> | B<binary digits> | D<binary digits>
+# <order> = <function letter> [<address>] F | <function letter> <address> D
 # <address> = <integer> | <label>
 # <comment> = ; text terminated by newline
+
+# Numbers and orders are stored as short numbers (17 bits) except for D numbers which
+# assembles as a 35 bit long numbers  aligned to the next long number address skipping
+# a location if necessary.
 
 import sys
 import os.path
@@ -24,13 +30,13 @@ import argparse
 
 # ---- Global variables ---- #
 
-inFilePath = ""
-outFilepath = ""
-#listFilePath = ""
+inFilePath  = ""
+outFilePath = ""
 list = False
 
-store = [ 0 for x in range(64)] # store image
-cpa = 0 # current placing aqddress
+store = [ 0 for x in range(32)] # store image
+
+cpa = 0 # current placing address
 lineNo = 1
 lineStart = 0
 
@@ -44,10 +50,12 @@ def assembler():
 
     global cpa
 
+    outfile = None
+
     #print("***Assembler")
 
     # Open input
-    if inFilePath == "":
+    if inFilePath == "-":
         inFile = sys.stdin.read()
     else:
         try:
@@ -58,15 +66,14 @@ def assembler():
     inFile = inFile + "\n" # ensure terminated by a newline
 
     # Open output
-    if outFilePath == "":
+    if outFilePath == '-':
         outFile = sys.stdout
     else:
         try:
             outFile = open(outFilePath, 'wt')
         except:
             fail("Cannot open output")
-
-    #print("Input is:\n", inFile, "\nLength =", len(inFile))
+            sys.exit(1)
 
     # First pass
     cpa = 0 # assemble from location 0 onwards
@@ -85,8 +92,9 @@ def assembler():
 # ---- assemble ---- #
 
 def assemble(f, i, p): # assemble next line if any
+    global cpa
     #print("***Assemble", i, p)
-    if cpa > 63:
+    if cpa > 31:
         syntaxError(f, "program extends beyond tank 0")
     while i < len(f):
         i = skipSpace(f, i)
@@ -106,6 +114,10 @@ def assemble(f, i, p): # assemble next line if any
             i = double(f, i)
         elif f[i].isalpha():
             i = order(f, i, p)
+        elif f[i] == '@': # align on even word
+            i += 1
+            if (cpa&1) == 1:
+                cpa +=1
         else:
             syntaxError(f, "Unexpected symbol '" + f[i] + "'")
 
@@ -230,8 +242,8 @@ def double(f, i):
         elif digits == 0:
             syntaxError(f, "no digits found after D")
         else:
-            store[cpa] = value >> 18
-            store[cpa+1] = value & (2**18-1)
+            store[cpa+1] = value >> 18
+            store[cpa]   = value & (2**18-1)
             cpa += 2
             return i
 
@@ -338,19 +350,34 @@ def syntaxError(f, reason):
 def dumpStore(f):
     #print("***Dumping store")
     global cpa, store
-    for i in range(64):
+    f.write("\n\n\n\n")
+    for i in range(len(store)):
         value = store[i] & 131071
-        bits = ('0' if store[i] & 2**17 == 0 else '1')+format(value, "017b")[::-1]
+        bits = format(value, "017b")
+        if i == len(store)-1:
+            bits = bits + '0'
+        elif store[i+1] & 131072 == 0:
+            bits = bits + '0'
+        else:
+            bits = bits + '1'  
+        f.write(' ')
         f.write(bits)
         f.write('\n')
+    f.write('\n\n\n\n')
 
 def listStore(f):
     #print("***Listing store")
     global cpa, store
-    for i in range(64):
+    for i in range(len(store)):
         value = store[i] & 131071
         f.write("%2d " % i)
-        bits = ('0' if store[i] & 2**17 == 0 else '1') + format(value, "017b")[::-1]
+        bits = format(value, "017b")
+        if i == len(store)-1:
+            bits = bits + '0'
+        elif store[i+1] & 131072 == 0:
+            bits = bits + '0'
+        else:
+            bits = bits + '1'        
         f.write(bits)
         fn = functionCodes[(store[i] >> 12) & 31]
         ad = str((store[i] >> 1) & 1023)
@@ -366,21 +393,19 @@ def fail(msg):
 # ---- Decode arguments ---- #
 
 def getArgs():
-    global inFilePath, outFilePath, listFilePath, list
+    global inFilePath, outFilePath, list
     parser = argparse.ArgumentParser(
             description='Simple EDSAC assembler for test programs')
-    parser.add_argument('-list', action='store_true')
-    #parser.add_argument('-listfile', help='output program listing', default='')
-    parser.add_argument('-infile',  help='input file', default='')
-    parser.add_argument('-outfile',  help='output file', default='')
+    parser.add_argument('-list', action='store_true', help=
+                        'produce annotated listing, otherwise just bit patterns')
+    parser.add_argument('infile',  help='input file (or - for stdin)')
+    parser.add_argument('-o', '--out', help='output file', default='edsacasm.dat')
     args = parser.parse_args()
     inFilePath = args.infile
-    outFilePath = args.outfile
-    #listFilePath = args.listfile
+    outFilePath = args.out
     list = args.list
 
 # ---- Main program ---- #
 
 getArgs()
-#print("***In=", inFilePath, "Out=", outFilePath)
 assembler()

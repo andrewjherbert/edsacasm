@@ -1,0 +1,12 @@
+; FUNCTION TEST - COUNTUP
+; Loop continuously counting up from zero
+
+.START.    T .ZERO. D      ; Clear Accumulator
+.LOOP.     A .ONE.  D      ; Increment
+           G .LOOP. F      ; Jump whatever
+	   E .LOOP. F
+
+
+.ZERO.     D0
+.ONE.      D1
+

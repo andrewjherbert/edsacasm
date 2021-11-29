@@ -14,8 +14,8 @@
 .SCRAP.  +0
          +0
 .OP1.    P123F
-     S234D
+         S234D
 .OP2.    A345F
-     G456D
+         G456D
 .RESLT.  &0
          &0

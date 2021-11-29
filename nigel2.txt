@@ -1,0 +1,35 @@
+; NIGEL2
+
+.L0.   X 0 F
+.L1.   X 1 F
+.L2.   X 2 F
+       H .OP1. D
+       G .L1. F
+       E .L2. F
+       Z 6 F
+       +0
+.OP1.  D01111111011111101111101111011101101
+       Z 10 F
+       Z 11 F
+       Z 12 F
+       Z 13 F
+       Z 14 F
+       Z 15 F
+       Z 16 F
+       Z 17 F
+       Z 18 F
+       Z 19 F
+       Z 20 F
+       Z 21 F
+       Z 22 F
+       Z 23 F
+       Z 24 F
+       Z 25 F
+       Z 26 F
+       Z 27 F
+       Z 28 F
+       Z 29 F
+       Z 30 F
+       Z 31 F
+       
+       
