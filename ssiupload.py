@@ -47,18 +47,28 @@ def ssiUpload (filePath, devicePath):
 
     print("Select TEXTFILE to load copy to store")
 
-    ssiEcho(ser) # clear any output from SSI
+    ssiWait()  # clear any output from SSI
+    ssiEcho(ser)
 
     input("Type RETURN to exit from ssiupload")
 
     # Close the serial port
     ser.close()
 
+# ---- ssiWait ----#
+
+def ssiWait(ser):
+    print("Waiting for SSI input");
+    while ser.in_waiting == 0:
+        time.sleep(0.1)
+        
 # ---- ssiEcho ---- #
 
 def ssiEcho(ser):
     # echo any messages coming back
     print("Looking for SSI input")
+    while ser.in_waiting == 0:
+        time.sleep(0.1)
     while ser.in_waiting > 0:
         b = ser.read (1)
         print(b.decode('ascii'), end="")

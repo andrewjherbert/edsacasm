@@ -1,10 +1,10 @@
-# EDSAC Test Program Assembler - Andrew Herbert - 19 October 2021
+# EDSAC Test Program Assembler - Andrew Herbert - 30 December 2021
 
 # Generates binary images for loading into the bottom EDSAC store tank
 # (locations 0-63) using Tom Toth's SSI unit.
 
 
-# Usage: edsacasm.py infile|- [-h] [-list]
+# Usage: edsacasm.py infile|- [-h] [-list] [-o/--out=output-file]
 # -list option produces annotated output.  Without -list output is
 # suitable for loading via ssiupload.
 
@@ -19,6 +19,8 @@
 # <order> = <function letter> [<address>] F | <function letter> <address> D
 # <address> = <integer> | <label>
 # <comment> = ; text terminated by newline
+
+# @ forces next word to be aligned to even address
 
 # Numbers and orders are stored as short numbers (17 bits) except for D numbers which
 # assembles as a 35 bit long numbers  aligned to the next long number address skipping
@@ -42,12 +44,11 @@ lineStart = 0
 
 symbols = dict() # symbol table
 
-functionCodes = "P~~ERTYUIO~~SZ~~~F~~~HN~~LXGA~C~"
+functionCodes = "PQWERTYUIOJ#SZK*.FhD!HNM&LXGABCV"
 
 # ---- assembler ---- #
 
 def assembler():
-
     global cpa
 
     outfile = None
@@ -223,8 +224,6 @@ def binary(f, i):
 
 def double(f, i):
     global cpa, store
-    if (cpa & 1) == 1:
-    	cpa += 1 # align on long word boundary
     i += 1 # skip over D
     digits = 0
     value = 0
@@ -242,6 +241,8 @@ def double(f, i):
         elif digits == 0:
             syntaxError(f, "no digits found after D")
         else:
+            if ( (cpa+1) >= len(store)):
+                 syntaxError(f, "Insufficient space left to hold a store number")
             store[cpa+1] = value >> 18
             store[cpa]   = value & (2**18-1)
             cpa += 2
@@ -399,7 +400,7 @@ def getArgs():
     parser.add_argument('-list', action='store_true', help=
                         'produce annotated listing, otherwise just bit patterns')
     parser.add_argument('infile',  help='input file (or - for stdin)')
-    parser.add_argument('-o', '--out', help='output file', default='edsacasm.dat')
+    parser.add_argument('-o', '--out', help='output file', default='-')
     args = parser.parse_args()
     inFilePath = args.infile
     outFilePath = args.out

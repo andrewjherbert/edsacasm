@@ -1,0 +1,35 @@
+; Bell test
+
+ .L0.  Z  0 F
+       Z  1 F
+       Z  2 F
+       Z  3 F
+       Z  4 F
+       Z  5 F
+       Z  6 F
+       Z  7 F
+       Z  8 F
+       Z  9 F
+       Z 10 F
+       Z 11 F
+       Z 12 F
+       Z 13 F
+       Z 14 F
+       Z 15 F
+       Z 16 F
+       Z 17 F
+       Z 18 F
+       Z 19 F
+       Z 20 F
+       Z 21 F
+       Z 22 F
+       Z 23 F
+       Z 24 F
+       Z 25 F
+       Z 26 F
+       Z 27 F
+       Z 28 F
+       Z 29 F
+       E .L0. F
+       G .L0. F
+       
