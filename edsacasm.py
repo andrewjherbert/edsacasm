@@ -1,4 +1,4 @@
-# EDSAC Test Program Assembler - Andrew Herbert - 30 December 2021
+# EDSAC Test Program Assembler - Andrew Herbert - 30 November 2021
 
 # Generates binary images for loading into the bottom EDSAC store tank
 # (locations 0-63) using Tom Toth's SSI unit.
