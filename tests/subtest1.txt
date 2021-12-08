@@ -18,8 +18,16 @@
 		       S .ONE. D
 		       G .ERR2. F		; 1 - 1 < 0 -- wrong
 		       A .MINUS1. D
-		       G .START. F              ; 1 - 1 - 1< 0  --Pass
-.ERR2.		       Z1F	 		; Fail
+		       G .START. F              ; 1 - 1 - 1< 0  -- Pass
+.ERR2.		       Z2F	 		; Fail
+
+; -1 - 0 = -1
+		       T .MINUS1. D
+		       S .ZERO. D
+		       E .ERR3. F		; -1 - 0 >= 0 -- wrong
+		       A .ONE. D
+		       E .START. F		; -1 - 0 + 1 >= 0 -- Pass
+.ERR3.                 Z3F
 
 
 ; data - align on even address
@@ -27,8 +35,5 @@
 .ZERO.                D0
 .ONE.       	      D1
 .MINUS1.              D11111111111111111111111111111111111
-.PAT1.                D10101010101010101010101010101010101
-.PAT2.                D01010101010101010101010101010101010
-.PAT3.                D10101010101010101010101010101010100
 .SPARE.               D0
 

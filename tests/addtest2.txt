@@ -2,7 +2,7 @@
 
 .START.
 
-; add PAT1 and PAT2 = -1
+; add PAT1+ PAT2 = -1
       	       	       T .SPARE. D
 		       A .PAT1. D
 		       A .PAT2. D
@@ -12,12 +12,13 @@
 		       E ;+2 F              	; Pass 
 		       Z1F	 		; Fail
 
-; add PAT1 and PAT1 = -1
+; add PAT1 + PAT1 + PAT1 = -2
       	       	       T .SPARE. D
 		       A .PAT1. D
-		       A .PAT2. D
-		       E ;+4 F                  ; P1+P2 >= 0 -- wrong
-		       A .ONE. D                ; P1+P2+1 < 0 -- wrong
+		       A .PAT1. D
+		       A .PAT1. D
+		       E ;+4 F                  ; P1+P1+P1 >= 0 -- wrong
+		       A .TWO. D                ; P1+P1+P1+2 < 0 -- wrong
 		       G ;+2 F
 		       E .START. F
 		       Z2F
@@ -28,6 +29,7 @@
 ; data - align on even address
 @
 .ONE.       	      D1
+.TWO.                 D10
 .MINUS1.    	      D11111111111111111111111111111111111
 .PAT1.                D01010101010101010101010101010101010
 .PAT2.                D10101010101010101010101010101010101

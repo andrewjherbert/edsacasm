@@ -1,4 +1,4 @@
-# EDSAC Test Program Assembler - Andrew Herbert - 30 November 2021
+# EDSAC Test Program Assembler - Andrew Herbert - 8 December 2021
 
 # Generates binary images for loading into the bottom EDSAC store tank
 # (locations 0-63) using Tom Toth's SSI unit.
@@ -36,7 +36,7 @@ inFilePath  = ""
 outFilePath = ""
 list = False
 
-store = [ 0 for x in range(32)] # store image
+store = [ 0 for x in range(32)] # store image in hardware (36 bit) form
 
 cpa = 0 # current placing address
 lineNo = 1
@@ -86,9 +86,9 @@ def assembler():
 
     # Dump out content of store
     if list:
-        listStore(outFile)
+        dumpStore(outFile, True)
     else:
-        dumpStore(outFile)
+        dumpStore(outFile, False)
 
 # ---- assemble ---- #
 
@@ -135,6 +135,8 @@ def comment(f, i): # assemble comment
 def labelDef(f, i, p): # assemble label definition
     global symbols
     i, name = label(f, i, p)
+    if   p == 1 and name in symbols:
+        syntaxError(f, "Label already defined")
     symbols[name] = cpa
     return i
 
@@ -163,7 +165,7 @@ def number(f, i):
     value = int(f[i:j]) * +1 if sign == '+' else -1
     if value < -65536 or value > 65535:
         syntaxError(f, "number greater than 17 bits long")
-    store[cpa] = value
+    store[cpa] = value << 1
     #print("***Result =", value)
     cpa += 1
     return j
@@ -190,7 +192,7 @@ def octal(f, i):
         i += 1 # move to next digit
     if digits == 0:
         syntaxError(f, "no digits found after &")
-    store[cpa] = value
+    store[cpa] = value << 1
     cpa += 1
     return i
 
@@ -209,14 +211,13 @@ def binary(f, i):
         elif f[i] == '1':
             digits += 1
             i += 1
-            value = (value << 1) +1
+            value = (value << 1) + 1
             if value >= 65536:
                 syntaxError(f, "binary larger than 17 bits")
         elif digits == 0:
             syntaxError(f, "no digits found after B")
         else:
-            print(value, format(value, "020b"))
-            store[cpa] = value
+            store[cpa] = value << 1
             cpa += 1
             return i
 
@@ -236,15 +237,18 @@ def double(f, i):
             digits += 1
             i += 1
             value = (value << 1) + 1
-            if value >= 2**36:
+            if digits > 35:
                 syntaxError(f, "double larger than 35 bits")
         elif digits == 0:
             syntaxError(f, "no digits found after D")
         else:
             if ( (cpa+1) >= len(store)):
                  syntaxError(f, "Insufficient space left to hold a store number")
-            store[cpa+1] = value >> 18
-            store[cpa]   = value & (2**18-1)
+            value <<= 1
+            #print(format(value, "036b"))
+            store[cpa]   = value &0o777777
+            store[cpa+1] = value >> 18 
+            #print(format(store[cpa], "018b"), format(store[cpa+1], "018b"), "\n\n")
             cpa += 2
             return i
 
@@ -266,6 +270,7 @@ def order(f, i, p):
     else:
         syntaxError(f, "F or D expected")
     store[cpa] += long
+    store[cpa] <<= 1
     cpa +=1
     return i+1
 
@@ -348,42 +353,21 @@ def syntaxError(f, reason):
 
  # ---- dumpStore, listStore ---- #
 
-def dumpStore(f):
-    #print("***Dumping store")
-    global cpa, store
-    f.write("\n\n\n\n")
-    for i in range(len(store)):
-        value = store[i] & 131071
-        bits = format(value, "017b")
-        if i == len(store)-1:
-            bits = bits + '0'
-        elif store[i+1] & 131072 == 0:
-            bits = bits + '0'
-        else:
-            bits = bits + '1'  
-        f.write(' ')
-        f.write(bits)
-        f.write('\n')
-    f.write('\n\n\n\n')
-
-def listStore(f):
+def dumpStore(f, list):
     #print("***Listing store")
     global cpa, store
     for i in range(len(store)):
-        value = store[i] & 131071
-        f.write("%2d " % i)
-        bits = format(value, "017b")
-        if i == len(store)-1:
-            bits = bits + '0'
-        elif store[i+1] & 131072 == 0:
-            bits = bits + '0'
-        else:
-            bits = bits + '1'        
-        f.write(bits)
-        fn = functionCodes[(store[i] >> 12) & 31]
-        ad = str((store[i] >> 1) & 1023)
-        lg = "D" if (store[i] & 1 == 1) else "F"
-        f.write("    " + fn + ad + lg + '\n')
+        if list:
+            f.write("%2d " % i)
+        f.write(format(store[i], "018b"))
+        if list:
+            f.write("  ")
+            value = store[i] >> 1
+            fn = functionCodes[(value >> 12) & 31]
+            ad = str((value >> 1) & 1023)
+            lg = "D" if (value & 1 == 1) else "F"
+            f.write("    " + fn + ad + lg)
+        f.write('\n')
 
 # ---- Error handling ---- #
 

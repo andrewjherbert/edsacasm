@@ -1,0 +1,19 @@
+; Store checker - Andrew Herbert - under construction
+
+.CHECK.		T .LOOP1. F		; clear Acc
+			A .START. F		; index =  "U .START. F"
+			U .LOOP1. F	    ; store in next location
+.LOOP1.	+0
+			A .ONE. F		; add 1
+			U .LOOP1. F		;
+			S .FINISH. F    ; test if at end
+			G ;+2 F
+			Z F				; finished
+			A .FINISH. F    ; restore order
+			E .LOOP1. F
+
+.ONE.		P 1 F
+.START.		U .NEXT. F
+.FINISH.	U 1024 F
+.NEXT.     	+0
+
