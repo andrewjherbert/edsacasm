@@ -1,0 +1,22 @@
+; FUNCTION TEST - Collation part 2
+
+.START.
+
+; collate PAT1 & PAT2 = PAT3
+      	       	       T .SPARE. D
+		       H .PAT1. D
+		       C .PAT2. D
+		       S .PAT3. D
+		       G .ERR1. F		; p1 & p2 - p3 < 0 -- wrong
+		       S .ONE. D
+		       G .START. F		; p1 & p2 -p3 -1 < 0 -- Pass
+.ERR1.                 Z1F
+
+
+@
+.ONE.       	      D1
+.PAT1.		      D10000011111100000111111100000011111
+.PAT2.		      D11111110000011111110000011111111111
+.PAT3.		      D10000010000000000110000000000011111
+.SPARE.               D0
+

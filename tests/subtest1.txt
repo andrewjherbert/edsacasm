@@ -18,11 +18,12 @@
 		       S .ONE. D
 		       G .ERR2. F		; 1 - 1 < 0 -- wrong
 		       A .MINUS1. D
-		       G .START. F              ; 1 - 1 - 1< 0  -- Pass
+		       G ;+2 F              ; 1 - 1 - 1< 0  -- Pass
 .ERR2.		       Z2F	 		; Fail
 
 ; -1 - 0 = -1
-		       T .MINUS1. D
+		       T .SPARE. D
+		       A .MINUS1. D
 		       S .ZERO. D
 		       E .ERR3. F		; -1 - 0 >= 0 -- wrong
 		       A .ONE. D

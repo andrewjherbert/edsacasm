@@ -7,5 +7,9 @@ edsacasm tests/addtest1.txt >tests/addtest1.dat
 edsacasm tests/addtest2.txt >tests/addtest2.dat
 edsacasm tests/addtest3.txt >tests/addtest3.dat
 edsacasm tests/subtest1.txt >tests/subtest1.dat
+edsacasm tests/subtest2.txt >tests/subtest2.dat
+edsacasm tests/colltest1.txt >tests/colltest1.dat
+edsacasm tests/colltest2.txt >tests/colltest2.dat
+
 
 
