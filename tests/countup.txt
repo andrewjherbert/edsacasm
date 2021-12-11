@@ -8,6 +8,6 @@
 	   E .LOOP. F
 
 @
-.ZERO.     D0
-.ONE.      D1
+.ZERO.     B0L
+.ONE.      B1L
 

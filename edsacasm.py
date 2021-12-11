@@ -15,16 +15,16 @@
 # <label> = .<name>.
 # <name> = alpha numeric sequence
 # <word> = <number> | <order>
-# <number> = +<digits> | -<digits> | &<digits> | B<binary digits> | D<binary digits>
+# <number> = +<digits> | -<digits> | &<digits> | B<binary digits> | <number>L
 # <order> = <function letter> [<address>] F | <function letter> <address> D
 # <address> = <integer> | <label>
 # <comment> = ; text terminated by newline
 
 # @ forces next word to be aligned to even address
 
-# Numbers and orders are stored as short numbers (17 bits) except for D numbers which
-# assembles as a 35 bit long numbers  aligned to the next long number address skipping
-# a location if necessary.
+# Numbers and orders are stored as short numbers (17 bits) ubless followed by L in 
+# which case they are assembled as 35 bit long numbers  aligned to the next long
+# number address skipping a location if necessary.
 
 import sys
 import os.path
@@ -111,8 +111,6 @@ def assemble(f, i, p): # assemble next line if any
             i = octal(f, i)
         elif f[i] == 'B':
             i = binary(f, i)
-        elif f[i] == 'D':
-            i = double(f, i)
         elif f[i].isalpha():
             i = order(f, i, p)
         elif f[i] == '@': # align on even word
@@ -159,16 +157,13 @@ def number(f, i):
     global cpa, store
     #print("***Number", i, '"', f[i], '"')
     sign = f[i]
+    value = 0
     j = i+1
     while f[j].isdigit():
         j += 1
     value = int(f[i:j]) * +1 if sign == '+' else -1
-    if value < -65536 or value > 65535:
-        syntaxError(f, "number greater than 17 bits long")
-    store[cpa] = value << 1
     #print("***Result =", value)
-    cpa += 1
-    return j
+    return storeNumber (f, j, value)
 
 # ---- octal ---- #
 
@@ -187,14 +182,10 @@ def octal(f, i):
         else:
             digits += 1
             value = (value << 3) +(ord(f[i])-ord('0'))
-        if value >= 65536:
-            syntaxError(f, "octal greater than 17 bits long")
         i += 1 # move to next digit
     if digits == 0:
         syntaxError(f, "no digits found after &")
-    store[cpa] = value << 1
-    cpa += 1
-    return i
+    return storeNumber(f, i, value)
 
 # ----binary ---- #
 
@@ -212,45 +203,39 @@ def binary(f, i):
             digits += 1
             i += 1
             value = (value << 1) + 1
-            if value >= 65536:
-                syntaxError(f, "binary larger than 17 bits")
         elif digits == 0:
             syntaxError(f, "no digits found after B")
         else:
-            store[cpa] = value << 1
-            cpa += 1
-            return i
+            return storeNumber(f, i, value)
 
-# ----double ---- #
+# ---- store number ---- #
 
-def double(f, i):
+def storeNumber (f, i, value):
     global cpa, store
-    i += 1 # skip over D
-    digits = 0
-    value = 0
-    while True:
-        if f[i] == '0':
-            value = value << 1
-            digits += 1
-            i += 1
-        elif f[i] == '1':
-            digits += 1
-            i += 1
-            value = (value << 1) + 1
-            if digits > 35:
-                syntaxError(f, "double larger than 35 bits")
-        elif digits == 0:
-            syntaxError(f, "no digits found after D")
-        else:
-            if ( (cpa+1) >= len(store)):
-                 syntaxError(f, "Insufficient space left to hold a store number")
-            value <<= 1
-            #print(format(value, "036b"))
-            store[cpa]   = value &0o777777
-            store[cpa+1] = value >> 18 
-            #print(format(store[cpa], "018b"), format(store[cpa+1], "018b"), "\n\n")
-            cpa += 2
-            return i
+    double = True if f[i] == 'L' else False
+    if double:
+        i += 1
+        if value > 2**35-1 or value < -2**35:
+            syntaxError(f, "long number out of range")
+        if cpa % 2 == 1:
+            cpa += 1 # align to even location
+        if ( (cpa+1) >= len(store)):
+            syntaxError(f, "Insufficient space left to store long number")
+        value = (value & 0o377777777777) << 1
+        #print(format(value, "036b"))
+        store[cpa]   = value &0o777777
+        store[cpa+1] = value >> 18 
+        #print(format(store[cpa], "018b"), format(store[cpa+1], "018b"), "\n\n")
+        cpa += 2
+    else: # short 
+        if value > 2**17-1 or value < -2**17:
+            syntaxError(f, "short number out of range")
+        if cpa >= len(store):
+            syntaxError(f, "Insufficient space left to store short number")
+        value = (value & 0o377777) << 1
+        store[cpa] = value
+        cpa += 1
+    return i
 
 # ---- order ---- #
 

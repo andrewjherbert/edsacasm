@@ -16,7 +16,7 @@
 
 ; data - align on even address
 @
-.ONE.       	      D1
-.PAT2.                D10101010101010101010101010101010101
-.SPARE.               D0
+.ONE.       	      +1L
+.PAT2.                B10101010101010101010101010101010101L
+.SPARE.               +0L
 

@@ -13,6 +13,6 @@
 
 ; data - align on even address
 @
-.ONE.       	      D1
-.SPARE.               D0
+.ONE.       	      +1L
+.SPARE.               +0L
 

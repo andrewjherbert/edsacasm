@@ -32,8 +32,8 @@
 
 ; data - align on even address
 @
-.ZERO.                D0
-.ONE.       	      D1
-.MINUS1.    	      D11111111111111111111111111111111111
-.SPARE.               D0
+.ZERO.                +0L
+.ONE.       	      +1L
+.MINUS1.    	      B11111111111111111111111111111111111L
+.SPARE.               +0L
 
