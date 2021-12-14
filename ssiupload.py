@@ -1,5 +1,5 @@
 
-#Transfer EDSAC tank 0 images to SSI  - Andrew Herbert 19/10/2021
+#Transfer EDSAC tank 0 images to SSI  - Andrew Herbert 14/12/2021
 
 # ssiupload device infile
 
@@ -36,18 +36,27 @@ def ssiUpload (filePath, devicePath):
     buf = (file.read()).encode('ascii') # force input to ASCII
 
     # Set up SSI unit
-    input("SSI unit should have reset, type RETURN to continue")
+    print("SSI unit should have reset")
+
+    # clear any input from SSI
+    ssiEcho(ser)
+    
     input("Select LOCAL mode and type RETURN to continue")
+
+    # clear any input from SSI
+    ssiEcho(ser)
     input("Scroll to, but do not select, TEXTFILE and type RETURN to continue")
+
+    # clear any input from SSI
+    ssiEcho(ser)
     
     # Send file to SSI
     ssiSend(buf, ser)
-
     ssiEcho(ser) # clear any output from SSI
 
     print("Select TEXTFILE to load copy to store")
 
-    ssiWait()  # clear any output from SSI
+    ssiWait(ser)  # clear any output from SSI
     ssiEcho(ser)
 
     input("Type RETURN to exit from ssiupload")
@@ -60,15 +69,13 @@ def ssiUpload (filePath, devicePath):
 def ssiWait(ser):
     print("Waiting for SSI input");
     while ser.in_waiting == 0:
-        time.sleep(0.1)
+        time.sleep(0.01)
         
 # ---- ssiEcho ---- #
 
 def ssiEcho(ser):
     # echo any messages coming back
     print("Looking for SSI input")
-    while ser.in_waiting == 0:
-        time.sleep(0.1)
     while ser.in_waiting > 0:
         b = ser.read (1)
         print(b.decode('ascii'), end="")
@@ -80,7 +87,6 @@ def ssiEcho(ser):
 
 def ssiSend(buf, ser):
     print("Sending data to SSI")
-    time.sleep(2) # allow time for SSI to wake up
     ssiEcho(ser);
     count = 0
     for ch in buf:
@@ -88,10 +94,12 @@ def ssiSend(buf, ser):
         if chr(ch) == '0' or chr(ch) == '1':
             count += 1
         while ser.out_waiting != 0:
-            time.sleep (0.01)
+            time.sleep (0.005)
         if ser.write (bytes([ch])) != 1:
             sys.stderr.write("ssiupload: ser.write failed\n")
             sys.exit(1)
+        else:
+            time.sleep(0.005)
     print("ssiupload: Buffer sent", count, "bits")
 
 # ---- main program ---- #

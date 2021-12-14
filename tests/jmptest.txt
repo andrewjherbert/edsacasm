@@ -1,8 +1,7 @@
+
 ; FUNCTION TEST - JUMPS
 
-.START.
-
-			T .SPARE.D		; Clear Acc
+.START.			T .SPARE.D		; Clear Acc
 
 ;  01: jump if positive on 0
 
@@ -20,7 +19,7 @@
 			T .SPARE. D		; clear Acc
 			A .MAXNEG. D
 			E ;+2 F			; MAXNEG >= 0?
-			G ;+2 F; 		; MAXNEG < 0
+			G ;+2 F 		; MAXNEG < 0
 			Z3F 			; fail
 
 ; 04: jump if negative on 0

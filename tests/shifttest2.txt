@@ -1,0 +1,38 @@
+; FUNCTION TEST -  Shifting part 1
+
+.START.
+
+; shift PAT1 right 1 place = PAT2
+			T .SPARE. D
+			A .PAT1. D
+			R 0 D		; shift right 1 place
+			S .PAT2. D
+			G .ERR1. F	; < 0: fail
+			S .ONE. D
+			G ;+2 F	; = 0: pass
+
+.ERR1.			Z1F
+
+; shift PAT3 right 1 place = PAT4
+
+			T .SPARE. D
+			A .PAT3. D
+			R 0 D		; shift right 1 place
+			S .PAT4. D
+			G .ERR2. F	; < 0: fail
+			S .ONE. D
+			G .START. F	; = 0: pass
+
+.ERR2.			Z2F
+			
+
+; data - align on even address
+@
+.ONE.      	      +1L
+.PAT1.                B10101010101010101010101010101010101L
+.PAT2.                B11010101010101010101010101010101010L
+.PAT3.		      B01010101010101010101010101010101010L
+.PAT4.		      B00101010101010101010101010101010101L
+.SPARE.               &0L
+
+

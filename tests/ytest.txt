@@ -1,0 +1,28 @@
+; FUNCTION TEST - F instruction
+
+.START.    T .SPARE. D
+	   A .ZERO. D
+	   Y 0 D
+	   G .ERR1. F		; < 0: fail
+	   L 0 D                ; check bit 35
+	   S .ONE. D
+	   G .ERR1. F
+	   E ;+2 F              ; = 0: pass
+.ERR1.	   Z0F
+
+	   T .SPARE. D
+	   A .ONE. D
+	   R 0 D                ; set bit 35
+	   Y 0 D
+	   G .ERR2. F
+	   S .ONE. F
+	   G .START. F
+.ERR2.	   Z1F
+	   
+  
+
+
+@
+.ZERO.    +0L
+.ONE.	  +1L
+.SPARE.   +0L

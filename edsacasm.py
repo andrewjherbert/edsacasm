@@ -1,4 +1,4 @@
-# EDSAC Test Program Assembler - Andrew Herbert - 8 December 2021
+# EDSAC Test Program Assembler - Andrew Herbert - 14 December 2021
 
 # Generates binary images for loading into the bottom EDSAC store tank
 # (locations 0-63) using Tom Toth's SSI unit.
@@ -341,6 +341,8 @@ def syntaxError(f, reason):
 def dumpStore(f, list):
     #print("***Listing store")
     global cpa, store
+    for i in range(4):
+        f.write('\n')
     for i in range(len(store)):
         if list:
             f.write("%2d " % i)
@@ -352,6 +354,8 @@ def dumpStore(f, list):
             ad = str((value >> 1) & 1023)
             lg = "D" if (value & 1 == 1) else "F"
             f.write("    " + fn + ad + lg)
+        f.write('\n')
+    for i in range(4):
         f.write('\n')
 
 # ---- Error handling ---- #
