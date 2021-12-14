@@ -15,6 +15,7 @@ edsacasm tests/colltest2.txt >tests/colltest2.dat
 edsacasm tests/shifttest1.txt >tests/shifttest1.dat
 edsacasm tests/shifttest2.txt >tests/shifttest2.dat
 edsacasm tests/ytest.txt >tests/ytest.dat
+edsacasm tests/tones.txt >tests/tones.dat
 
 
 

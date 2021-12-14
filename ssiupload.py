@@ -19,7 +19,7 @@ def ssiUpload (filePath, devicePath):
 
     # Open serial port
     try:
-        print("Opening", devicePath)
+        # print("Opening", devicePath)
         ser.open()
     except serial.SerialException as e:
             sys.stderr.write(
@@ -36,7 +36,7 @@ def ssiUpload (filePath, devicePath):
     buf = (file.read()).encode('ascii') # force input to ASCII
 
     # Set up SSI unit
-    print("SSI unit should have reset")
+    print("SSI unit should have reset\n")
 
     # clear any input from SSI
     ssiEcho(ser)
@@ -52,7 +52,9 @@ def ssiUpload (filePath, devicePath):
     
     # Send file to SSI
     ssiSend(buf, ser)
-    ssiEcho(ser) # clear any output from SSI
+
+    # clear any output from SSI
+    ssiEcho(ser) 
 
     print("Select TEXTFILE to load copy to store")
 
@@ -67,9 +69,11 @@ def ssiUpload (filePath, devicePath):
 # ---- ssiWait ----#
 
 def ssiWait(ser):
-    print("Waiting for SSI input");
-    while ser.in_waiting == 0:
-        time.sleep(0.01)
+    # print("Waiting for SSI input")
+    for ticks in range(200):
+        if ser.in_waiting == 0:
+            time.sleep(0.01)
+        else return
         
 # ---- ssiEcho ---- #
 
@@ -86,8 +90,7 @@ def ssiEcho(ser):
 # ---- ssiSend ---- #
 
 def ssiSend(buf, ser):
-    print("Sending data to SSI")
-    ssiEcho(ser);
+    # print("Sending data to SSI")
     count = 0
     for ch in buf:
         print(chr(ch), end='')
@@ -100,7 +103,7 @@ def ssiSend(buf, ser):
             sys.exit(1)
         else:
             time.sleep(0.005)
-    print("ssiupload: Buffer sent", count, "bits")
+    # print("ssiupload: Buffer sent", count, "bits")
 
 # ---- main program ---- #
 

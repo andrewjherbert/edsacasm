@@ -1,5 +1,7 @@
 ; FUNCTION TEST - F instruction
 
+; case 0 - no rounding required
+
 .START.    T .SPARE. D
 	   A .ZERO. D
 	   Y 0 D
@@ -10,17 +12,16 @@
 	   E ;+2 F              ; = 0: pass
 .ERR1.	   Z0F
 
+; case 1 - rounding required
+
 	   T .SPARE. D
 	   A .ONE. D
 	   R 0 D                ; set bit 35
 	   Y 0 D
-	   G .ERR2. F
-	   S .ONE. F
+	   G .ERR2. F           ; < 0: fail
+	   S .ONE. D
 	   G .START. F
 .ERR2.	   Z1F
-	   
-  
-
 
 @
 .ZERO.    +0L
