@@ -73,7 +73,8 @@ def ssiWait(ser):
     for ticks in range(200):
         if ser.in_waiting == 0:
             time.sleep(0.01)
-        else return
+        else:
+            return
         
 # ---- ssiEcho ---- #
 
