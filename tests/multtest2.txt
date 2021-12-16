@@ -1,0 +1,42 @@
+; FUNCTION TEST -  Multiplication 2
+
+.START.
+
+; case 0: 1 * 1 = 1
+
+       	      	T .SPARE. D	; clear accumulator
+		H .ONE. D	; calculate 1 * 1 * 1
+		V .ONE. D
+		G ;+3 F		; < 0: fail
+		S .TWO. D
+		G ;+2 F		; = 0: pass
+		Z0F
+
+; case 1: -1 * -1 = 1
+
+       	      	T .SPARE. D	; clear accumulator
+		H .MINUS1. D	; calculate -1 * -1 = 1
+		V .MINUS1. D
+		G ;+3 F		; < 0: fail
+		S .TWO. D
+		G ;+2 F		; = 0: pass
+		Z0F
+
+; CASE 2: -1 * 1 = -1
+
+       	      	T .SPARE. D	; clear accumulator
+		H .MINUS1. D	; calculate -1 * 1 = 1
+		V .ONE. D
+		E ;+3 F		; < 0: fail
+		S .TWO. D
+		G .START. F		; = 0: pass
+		Z0F
+
+; data - align on even address
+@
+.ONE.		+1L
+.TWO.		+2L
+.MINUS1.	-1L
+.SPARE.		+0
+
+

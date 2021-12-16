@@ -1,0 +1,35 @@
+; FUNCTION TEST -  Multiplication 2
+
+.START.
+
+; case 0: -65536 * -65536 = -65536
+
+       	      	T .SPARE. D	; clear accumulator
+		H .MAXNEG. D	
+		V .MAXNEG. D
+		G ;+2 F		
+		Z0F             ; >= 0: fail
+		S .MAXNEG. D
+		E ;+2 F		; = 0: pass
+		
+; case 1 PAT1 * PAT1 = PAT2
+
+       	      	T .SPARE. D	; clear accumulator
+		A .PAT2. D
+		H .PAT1. D	
+		N .PAT1. D
+		E ;+2 F
+		Z1F		; < 0: fail
+		S .ONE. D
+		G .START. F	; = 0: pass
+		Z2F
+
+; data - align on even address
+@
+.MAXNEG.	B10000000000000000000000000000000000L
+.PAT1.		B10110011001100110100000000000000000L
+.PAT2.		B00101110000101000110101110000101001L
+.ONE.		+1L
+.SPARE.		+0
+
+

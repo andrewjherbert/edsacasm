@@ -1,0 +1,40 @@
+; FUNCTION TEST -  Shifting part 3
+
+.START.
+
+; case 1: -65536 shift right 70 places (acc = 71 bits) sends top bit to bottom
+			T .SPARE. D
+			A .MAXNEG. D
+			R 0 F		; shift right 15 places
+			R 0 F		; shift right 30 places
+			R 0 F		; shift right 45 places
+			R 0 F		; shift right 60 places
+			R 256 F		; shift right 70 places
+			G ;+2 F		
+			Z1F   		; >= 0: fail
+			A .ONE. D
+			E ;+2 F		; = -1: pass
+			Z2F
+; case 2: shift result left 70 places store restore top bit
+			L 0 F		; shift left 13 places
+			L 0 F		; shift left 26 places
+			L 0 F		; shift left 39 places
+			L 0 F           ; shift left 52 places
+			L 0 F           ; shift left 65 places
+			L 8 F           ; shift left 70 places
+			G ;+2 F
+			Z3F		; >= 0: fail
+			S .MAXNEG. D
+			G ;+3 F		; < 0:  fail
+			S .ONE. D
+			G .START. F     ; = 0:  pass
+			Z4F
+
+
+; data - align on even address
+@
+.MAXNEG.		B10000000000000000000000000000000000L
+.ONE.			+1L
+.SPARE.			+0
+
+

@@ -1,4 +1,4 @@
-; FUNCTION TEST -  Shifting part 1
+; FUNCTION TEST -  Shifting part 2
 
 .START.
 
@@ -9,7 +9,7 @@
 			S .PAT2. D
 			G .ERR1. F	; < 0: fail
 			S .ONE. D
-			G ;+2 F	; = 0: pass
+			G ;+2 F		; = 0: pass
 
 .ERR1.			Z1F
 
