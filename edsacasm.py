@@ -10,8 +10,8 @@
 
 # Syntax
 #
-# <program> = <line> [<line>*]
-# <line> = [@] [<label>] [<word>] [comment]
+# <program> = <item> [<item>*]
+# <line> = [@] [<label>]* [<word>] [comment]
 # <label> = .<name>.
 # <name> = alpha numeric sequence
 # <word> = <number> | <order>
@@ -104,35 +104,59 @@ def assemble(f, i, p): # assemble next line if any
             i = newline(f, i)
         elif f[i] == ';':
             i = comment(f, i+1)
-        elif f[i] == '.':
-            i = labelDef(f, i+1, p)
-        elif f[i] == '+' or f[i] == '-':
-            i = number(f, i)
-        elif f[i] == '&':
-            i = octal(f, i)
-        elif f[i] == 'B':
-            i = binary(f, i)
-        elif f[i].isalpha():
-            i = order(f, i, p)
-        elif f[i] == '@': # align on even word
-            i += 1
-            if (cpa&1) == 1:
-                cpa +=1
+        elif f[i] == '@':
+            i = align(f, i, p)
         else:
-            syntaxError(f, "Unexpected symbol '" + f[i] + "'")
+            i = labelledWord (f, i, p)
 
 # ---- comment ---- #
 
 def comment(f, i): # assemble comment
     #print("***Comment", i, '"', f[i], '"');
     while f[i] != '\n':
-        i+= 1
+        i += 1
     return i
 
+# ---- align ---- #
+
+def align(f, i, p): # align on even word
+    global cpa
+    #print("Align", i, p)
+    if (cpa&1) == 1:
+        cpa +=1
+    i += 1
+    if i < len(f):
+        i = labelledWord(f, i, p)
+    return i
+
+# ---- labels ---- #
+
+def labelledWord(f, i, p):
+    #print("***labelledWord", i, p)
+    # look for labels
+    i = skipSpace(f, i)
+    while f[i] == '.':
+        i = labelDef(f, i+1, p)
+        i = skipSpace(f, i)
+        # look for word
+    if f[i] == '+' or f[i] == '-':
+        return number(f, i)
+    elif f[i] == '&':
+        return octal(f, i)
+    elif f[i] == 'B':
+        return binary(f, i)
+    elif f[i].isalpha():
+        return order(f, i, p)
+    elif f[i] == '\n':
+        return i
+    else:
+        syntaxError(f, "Unexpected symbol '" + f[i] + "'")
+    
 # ---- labelDef ---- #
 
 def labelDef(f, i, p): # assemble label definition
     global symbols
+    #print("***labelDef", i, p);
     i, name = label(f, i, p)
     if   p == 1 and name in symbols:
         syntaxError(f, "Label already defined")
@@ -142,7 +166,7 @@ def labelDef(f, i, p): # assemble label definition
 # ---- label ---- #
 
 def label(f, i, p): # assemble label
-    #print("***Label", i, '"', f[i], '"')
+    #print("***Label", p, i, '"', f[i], '"')
     j = i+1
     while f[j] != '.':
         if f[j] == '\n':
@@ -150,6 +174,7 @@ def label(f, i, p): # assemble label
         else:
              j += 1
     name = f[i:j]
+    #print("Name:", name)
     return (j+1, name)
 
  # ---- number ---- #
@@ -170,6 +195,7 @@ def number(f, i):
 
 def octal(f, i):
     global cpa, store
+    #print("****Octal", i, '"', f[i], '"')
     i += 1 # skip over &
     value = 0
     digits = 0
@@ -192,6 +218,7 @@ def octal(f, i):
 
 def binary(f, i):
     global cpa, store
+    #print("***Binary", i, '"', f[i], '"')
     i += 1 # skip over B
     digits = 0
     value = 0
