@@ -1,0 +1,35 @@
+; FUNCTION TEST - Transfer Unit / Short numbers
+
+.START.
+
+; case 0: PAT1 + PAT2 = -1
+
+       	        T .SPARE. F
+		A .PAT1. F
+		A .PAT2. F
+		G ;+2 F
+		Z0F		; >= 0: fail
+		A .ONE. F
+		E ;+2 F		; = -1: pass
+		Z1F
+
+; case 1: PAT1 * PAT2 = PAT3
+
+       	       T .SPARE. F
+	       H .PAT1. F
+	       V .PAT2. F
+	       G ;+2 F
+	       Z2F
+	       S .PAT3. D
+	       E .START. F
+	       Z3F       
+
+
+.ONE.           +1
+.PAT1.		B10101010101010101
+.PAT2.		B01010101010101010
+@
+.PAT3.		B11000111000111001000111000111001000L
+.SPARE.		+0
+
+

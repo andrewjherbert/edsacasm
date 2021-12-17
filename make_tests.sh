@@ -20,6 +20,11 @@ edsacasm tests/multtest1.txt >tests/multtest1.dat
 edsacasm tests/multtest2.txt >tests/multtest2.dat
 edsacasm tests/multtest3.txt >tests/multtest3.dat
 edsacasm tests/multtest4.txt >tests/multtest4.dat
+edsacasm tests/multtest5.txt >tests/multtest5.dat
+edsacasm tests/transftest.txt >tests/transftest.dat
+edsacasm tests/tutest.txt >tests/tutest.dat
+
+
 
 
 

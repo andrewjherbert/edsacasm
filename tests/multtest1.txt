@@ -37,6 +37,6 @@
 .ZERO.		+0L
 .ONE.		+1L
 .MINUS1.	-1L
-.SPARE.		+0
+.SPARE.		+0L
 
 

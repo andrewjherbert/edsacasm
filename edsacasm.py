@@ -1,4 +1,4 @@
-# EDSAC Test Program Assembler - Andrew Herbert - 16 December 2021
+# EDSAC Test Program Assembler - Andrew Herbert - 17 December 2021
 
 # Generates binary images for loading into the bottom EDSAC store tank
 # (locations 0-63) using Tom Toth's SSI unit.
@@ -23,8 +23,9 @@
 # @ forces next word to be aligned to even address
 
 # Numbers and orders are stored as short numbers (17 bits) ubless followed by L in 
-# which case they are assembled as 35 bit long numbers  aligned to the next long
-# number address skipping a location if necessary.
+# which case they are assembled as 35 bit long numbers in the next two succeeding
+# locations.  The @ symbol should be used befoe the label to foce alignment on a
+# even address.
 
 import sys
 import os.path
@@ -218,7 +219,7 @@ def storeNumber (f, i, value):
         if value > 2**35-1 or value < -2**35:
             syntaxError(f, "long number out of range")
         if cpa % 2 == 1:
-            cpa += 1 # align to even location
+            syntaxError(f, "Long number not aligned on an odd address")
         if ( (cpa+1) >= len(store)):
             syntaxError(f, "Insufficient space left to store long number")
         value = (value & 0o377777777777) << 1

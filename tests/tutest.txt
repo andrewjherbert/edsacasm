@@ -1,0 +1,33 @@
+; FUNCTION TEST - T and U orders
+
+.START.
+       	        T .SPARE. D
+		A .MINUS1. D
+		T .SPARE. D
+		E ;+2 F		; < 0: fail
+		Z0F		
+		S .ONE. D
+		G ;+2 F		; = 0: pass
+		Z1F
+		A .ONE. D
+		A .SPARE. D
+		G ;+2 F		; >= 0: fail
+		Z1F		
+		A .ONE. D
+		E ;+2 F		; =-1: pass
+		Z2F
+		A .MINUS1. D
+		U .SPARE. D
+		S .SPARE. D
+		E ;+2 F		; < 0: fail
+		Z3F
+		S .ONE. F
+		G .START. F	; = 0: pass	
+		Z4F	  	
+		
+@
+.ONE.           +1L
+.MINUS1.        -1L
+.SPARE.		+0L
+
+
