@@ -18,7 +18,7 @@
             		G ;+4 F                 ; -1+1 < 0
 			A .MINUS1. D
 			E ;+2 F			; -1+1-1 >= 0 -- wrong
-			G .START. F			; Pass
+			G .START. F		; Pass
 			Z2F			; Fail
 
 

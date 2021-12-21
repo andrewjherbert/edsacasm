@@ -1,12 +1,13 @@
-# EDSAC Test Program Assembler - Andrew Herbert - 17 December 2021
+# EDSAC Test Program Assembler - Andrew Herbert - 21 December 2021
 
 # Generates binary images for loading into the bottom EDSAC store tank
 # (locations 0-63) using Tom Toth's SSI unit.
 
 
-# Usage: edsacasm.py infile|- [-h] [-list] [-o/--out=output-file]
-# -list option produces annotated output.  Without -list output is
-# suitable for loading via ssiupload.
+# Usage: edsacasm.py infile|- [-h] [-list] [-o/--out=output-file] [-t/-tanks=nnn]
+# -list option produces annotated output.  Without -list output is suitable for
+# loading via ssiupload. -tanks specified maximum number of main store tanks
+# (32 words each) available.
 
 # Syntax
 #
@@ -37,7 +38,7 @@ inFilePath  = ""
 outFilePath = ""
 list = False
 
-store = [ 0 for x in range(32)] # store image in hardware (36 bit) form
+store = []  # store image in hardware (36 bit) form - size set in getargs
 
 cpa = 0 # current placing address
 lineNo = 1
@@ -148,7 +149,7 @@ def labelledWord(f, i, p):
     elif f[i].isalpha():
         return order(f, i, p)
     elif f[i] == '\n':
-        return i
+        return newline(f, i)
     else:
         syntaxError(f, "Unexpected symbol '" + f[i] + "'")
     
@@ -248,7 +249,7 @@ def storeNumber (f, i, value):
         if cpa % 2 == 1:
             syntaxError(f, "Long number not aligned on an odd address")
         if ( (cpa+1) >= len(store)):
-            syntaxError(f, "Insufficient space left to store long number")
+            syntaxError(f, "Store full")
         value = (value & 0o377777777777) << 1
         #print(format(value, "036b"))
         store[cpa]   = value &0o777777
@@ -259,7 +260,7 @@ def storeNumber (f, i, value):
         if value > 2**17-1 or value < -2**17:
             syntaxError(f, "short number out of range")
         if cpa >= len(store):
-            syntaxError(f, "Insufficient space left to store short number")
+            syntaxError(f, "Store full")
         value = (value & 0o377777) << 1
         store[cpa] = value
         cpa += 1
@@ -271,6 +272,8 @@ def order(f, i, p):
     global cpa, store, functions
     #print("***Order", i, '"', f[i], '"')
     order = functionCodes.find(f[i])
+    if cpa >= len(store):
+        syntaxError(f, "Store full")
     store[cpa] = order << 12
     if order == -1:
         syntaxError(f, "function code expected")
@@ -334,8 +337,8 @@ def relative(f, i, p):
     	value = value * 10 + ord(f[i]) - ord('0')
     	i += 1
     addr = cpa + value * (+1 if sign == '+' else -1)
-    if addr < 0 or addr > 63:
-        syntaxError(f, "relative address out of range 0-63")
+    if addr < 0 or addr > len(store):
+        syntaxError(f, "relative address out of range 0", '-', len(store))
     store[cpa] += (addr << 1)
     return i
 
@@ -361,7 +364,7 @@ def skipSpace(f, i):
 
 def syntaxError(f, reason):
     global lineNo, lineStart
-    msg = "Syntax error in line " + str(lineNo) + ": " + reason + '\n'
+    msg = "Error on line " + str(lineNo) + ": " + reason + '\n'
     lineEnd = f.index('\n', lineStart)
     msg = msg + f[lineStart:lineEnd]
     fail(msg)
@@ -397,17 +400,23 @@ def fail(msg):
 # ---- Decode arguments ---- #
 
 def getArgs():
-    global inFilePath, outFilePath, list
+    global inFilePath, outFilePath, list, store
     parser = argparse.ArgumentParser(
             description='Simple EDSAC assembler for test programs')
     parser.add_argument('-list', action='store_true', help=
                         'produce annotated listing, otherwise just bit patterns')
     parser.add_argument('infile',  help='input file (or - for stdin)')
     parser.add_argument('-o', '--out', help='output file', default='-')
+    parser.add_argument('-t', '--tanks', type =int, help='number of store tanks allowed',
+                        default=1)
     args = parser.parse_args()
     inFilePath = args.infile
     outFilePath = args.out
     list = args.list
+    if args.tanks< 1 or args.tanks > 32:
+        print("Number of tanks must be in range 1..32");
+        sys.exit(1)
+    store = [ 0 for x in range(args.tanks*32)]
 
 # ---- Main program ---- #
 

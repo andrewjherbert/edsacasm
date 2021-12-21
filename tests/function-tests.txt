@@ -1,0 +1,499 @@
+; EDSAC FUNCTIONAL TEST PROGRAM - Andrew Herbert - 21 Decdmber 2021
+;
+; (Approx 350 locations)
+
+.START.
+
+; FUNCTION TEST - JUMPS
+
+.JMPTESTS.		T .SPARE.D		; Clear Acc
+
+;  jump if positive on 0
+
+		 	E ;+2 F			; 0 >= 0?
+.ERR1.		 	Z1F			; fail
+
+; jump if postive on MAXPOS
+
+			A .MAXPOS. D
+			E ;+2 F			; MAXPOS >= 0?
+.ERR2.			Z2F			; fail
+
+; jump if positive on MAXNEG, jump if negative on MAXNEG
+
+			T .SPARE. D		; clear Acc
+			A .MAXNEG. D
+			E .ERR3. F		; MAXNEG >= 0?
+			G ;+2 F 		; MAXNEG < 0
+.ERR3.			Z3F 			; fail
+
+; jump if negative on 0
+			T .SPARE. D		; clear Acc
+			G .ERR4. F         	; 0 < 0?
+			E ;+2 F
+.ERR4.			Z4F
+
+; jump if negative on MAXPOS
+			A .MAXPOS. D
+			G .ERR5. F		; MAXPOS < 0
+			E ;+2 F
+.ERR5.			Z5F
+
+; FUNCTION TEST -  ADDITION
+
+.ADDTESTS.
+
+; add 0 + 0
+			T .SPARE. D
+			A .ZERO. D		; 0 + 0
+			G ;+4 F			; 0 + 0 < 0 -- wrong
+			A .MINUS1. D		; 0 + 0 - 1
+			E .ERR6. F		; 0 + 0 - 1 >= 0 -- wrong
+			G ;+2 F			; Pass
+.ERR6.			Z6F			; Fail
+
+; add -1 + 1 = 0
+			T .SPARE. D
+			A .MINUS1. D
+			A .ONE. D
+            		G .ERR7. F                ; -1+1 < 0
+			A .MINUS1. D
+			E .ERR7. F		; -1+1-1 >= 0 -- wrong
+			G ;+2 F			; Pass
+.ERR7.			Z7F			; Fail
+
+; add PAT1+ PAT2 = -1
+      	       	        T .SPARE. D
+		       	A .PAT1. D
+		       	A .PAT2. D
+		       	E .ERR8. F		; P1+P2 >= 0 -- wrong
+		       	A .ONE. D
+		       	G .ERR8. F              ; P1+P2+1 < 0 -- wrong
+		       	E ;+2 F              	; Pass 
+.ERR8.		       	Z8F	 		; Fail
+
+; add PAT1 + PAT1 + PAT1 = -2
+      	       	       T .SPARE. D
+		       A .PAT1. D
+		       A .PAT1. D
+		       A .PAT1. D
+		       E .ERR9. F               ; P1+P1+P1 >= 0 -- wrong
+		       A .TWO. D                ; P1+P1+P1+2 < 0 -- wrong
+		       G .ERR9. F
+		       E ;+2 F
+.ERR9.		       Z9F
+
+; add PAT2 + PAT2 + PAT2  = -1
+      	       	       T .SPARE. D
+		       A .PAT2. D
+		       A .PAT2. D
+		       A .PAT2. D
+		       E .ERR10. F		; P2+P2+P2 >= 0 -- wrong
+		       A .ONE. D
+		       G .ERR10. F		; P2+P2+P2+1 < 0 -- wrong
+		       E ;+2 F              	; Pass
+.ERR10.		       Z10F	 		; Fail;
+
+; FUNCTION TEST - SUBTRACTION
+
+.SUBTRACTTESTS.
+
+; subtract 0 - 0 = 0
+      	       	       T .SPARE. D
+		       S .ZERO. D
+		       G .ERR11. F		; 0 - 0 < 0 -- Fail
+		       S .ZERO. D
+		       E ;+2 F                  ; 0 - 0 - = 0 -- Pass
+.ERR11.		       Z11F	 		; Fail
+
+; subtract 1 - 1 = 0
+      	       	       T .SPARE. D
+		       A .ONE. D
+		       S .ONE. D
+		       G .ERR12. F		; 1 - 1 < 0 -- Fail
+		       S .ZERO. D
+		       E ;+2 F			; 1 - 1 = 0 -- Pass
+.ERR12.		       Z12F	 		; Fail
+
+;subtract  -1 - 0 = -1
+		       T .SPARE. D
+		       A .MINUS1. D
+		       S .ZERO. D
+		       E .ERR13. F		; -1 - 0 >= 0 -- wrong
+		       A .ONE. D
+		       E ;+2 F			; -1 - 0 + 1 >= 0 -- Pass
+ .ERR13.               Z13F
+
+; subtract 0 - 1 = -1
+      	       	       T .SPARE. D
+		       S .ONE. D
+		       E .ERR14. F		; 0 - 1 >= 0 -- Fail
+		       A .ONE. D
+		       E ;+2 F			; 0 - 1 + 1 >= 0 -- Pass
+ .ERR14.               Z14F
+
+; FUNCTION TEST - COLLATION
+
+.COLLATETESTS.
+
+; collate 0 & -1 = 0
+      	       	       T .SPARE. D
+		       H .ZERO. D
+		       C .MINUS1. D
+		       G .ERR15. F		; 0 & -1 < 0 -- wrong
+		       S .ZERO. D
+		       E ;+2 F			; -(0 & -1) >= 0 -- Pass
+ .ERR15.               Z15F
+
+; collate -1 & 0 = 0
+      	       	       T .SPARE. D
+		       H .MINUS1. D
+		       C .ZERO. D
+		       G .ERR16. F		; -1 & 0 < 0 -- wrong
+		       S .ZERO. D
+		       E ;+2 F			; (--1 & 0) >= 0 -- Pass
+.ERR16.                Z16F
+
+; collate -1 & -1 = -1
+		       T .SPARE. D
+		       H .MINUS1. D
+		       C .MINUS1. D
+		       E .ERR17. F		; -1 & -1 >= 0 -- wrong
+		       A .ONE. D
+		       E ;+2 F			; -1 & -1 + 1 >= 0 -- Pass
+ .ERR17.	       Z17F
+
+; collate PAT3 & PAT4 = PAT5
+      	       	       T .SPARE. D
+		       H .PAT3. D
+		       C .PAT4. D
+		       S .PAT5. D
+		       G .ERR18. F		; p1 & p2 - p3 < 0 -- wrong
+		       S .ZERO. D
+		       E ;+2 F		        ; p1 & p2 -p3 -1 < 0 -- Pass
+.ERR18.                Z18F
+
+; FUNCTION TEST -  SHIFT
+
+.SHIFTTESTS.
+
+; shift PAT6 left 1 place = PAT7
+		    	T .SPARE. D
+			A .PAT6. D
+			L 0 D		; shift left 1 place
+			S .PAT7. D
+			G .ERR19. F     ; < 0: fail
+			S .ZERO. D
+			E ;+2 F		; = 0: pass   
+
+.ERR19.			Z19F
+
+; shift PAT7 left 1 place = PAT8
+  	     	    	T .SPARE. D
+			A .PAT7. D
+			L 0 D
+			S .PAT8. D
+			G .ERR20. F	; >= 0: fail
+			S .ZERO. D
+			E ;+2 F		; = 0: pass
+.ERR20.			Z20F
+
+
+; shift PAT9 right 1 place = PAT10
+			T .SPARE. D
+			A .PAT9. D
+			R 0 D		; shift right 1 place
+			S .PAT10. D
+			G .ERR21. F	; < 0: fail
+			S .ONE. D
+			G ;+2 F		; = 0: pass
+.ERR21.			Z21F
+
+; shift PAT11 right 1 place = PAT12
+
+			T .SPARE. D
+			A .PAT11. D
+			R 0 D		; shift right 1 place
+			S .PAT12. D
+			G .ERR22. F	; < 0: fail
+			S .ONE. D
+			G ;+2 F		; = 0: pass	
+.ERR22.			Z22F
+
+; -65536 shift right 70 places (acc = 71 bits) sends top bit to bottom
+			T .SPARE. D
+			A .MAXNEG. D
+			R 0 F		; shift right 15 places
+			R 0 F		; shift right 30 places
+			R 0 F		; shift right 45 places
+			R 0 F		; shift right 60 places
+			R 256 F		; shift right 70 places
+			G ;+2 F		
+			Z23F   		; >= 0: fail
+			A .ONE. D
+			E ;+2 F		; = -1: pass
+			Z24F
+
+; shift result left 70 places store restore top bit
+			L 0 F		; shift left 13 places
+			L 0 F		; shift left 26 places
+			L 0 F		; shift left 39 places
+			L 0 F           ; shift left 52 places
+			L 0 F           ; shift left 65 places
+			L 8 F           ; shift left 70 places
+			G ;+2 F
+			Z25F		; >= 0: fail
+			S .MAXNEG. D
+			G ;+3 F		; < 0:  fail
+			S .ONE. D
+			G ;+2 F		; = 0:  pass
+			Z26F
+
+; FUNCTION TEST - ROUNDING
+
+.ROUNDTESTS.
+
+; no rounding required
+
+ .ROUND.      	        T .SPARE. D
+	   		A .ZERO. D
+	   		Y 0 D
+	   		G .ERR27. F	; < 0: fail
+	   		L 0 D           ; check bit 35
+	   		S .ONE. D
+	   		G .ERR27. F
+	  		E ;+2 F         ; = 0: pass
+.ERR27.	   		Z27F
+
+; rounding required
+
+			T .SPARE. D
+	   		A .ONE. D
+	   		R 0 D           ; set bit 35
+	   		Y 0 D
+	   		G .ERR28. F     ; < 0: fail
+	   		S .TWO. D
+	   		G ;+2 F
+.ERR28.	   		Z28F
+
+; FUNCTION TEST -  MULTIPLICATION
+
+.MULTIPLYTESTS.
+
+; case 0: 0 * 0 = 0
+
+			T .SPARE. D	; clear accumulator
+		 	H .ZERO. D	; calculate 0 * 0
+			V .ZERO. D
+			G ;+3 F		; < 0: fail
+			S .ZERO. D
+			E ;+2 F		; = 0: pass
+.ERR29.			Z29F
+
+;  0 * 1 = 0
+			
+      	      		T .SPARE. D	; clear accumulator
+			H .ZERO. D	; calculate 0 * 0
+			V .ONE. D
+			G ;+3 F		; < 0: fail
+			S .ZERO. D
+			E ;+2 F		; = 0: pass
+.ERR30.			Z30F
+
+; 0 * -1 = 0
+
+			T .SPARE. D	; clear accumulator
+			H .ZERO. D	; calculate 0 * 0
+			V .MINUS1. D
+			G ;+3 F		; < 0: fail
+			S .ZERO. D
+			E ;+2 	 F	; = 0: pass
+.ERR31.			Z31F
+
+
+; 1 * 1 = 1
+
+			T .SPARE. D	; clear accumulator
+			H .ONE. D	; calculate 1 * 1 * 1
+		  	V .ONE. D
+			G ;+3 F		; < 0: fail
+			S .TWO. D
+			G ;+2 F		; = 0: pass
+.ERR32.			Z32F
+
+; -1 * -1 = 1
+
+			T .SPARE. D	; clear accumulator
+			H .MINUS1. D	; calculate -1 * -1 = 1
+			V .MINUS1. D
+			G ;+3 F		; < 0: fail
+			S .TWO. D
+			G ;+2 F		; = 0: pass
+.ERR33.			Z33F
+
+; -1 * 1 = -1
+
+			T .SPARE. D	; clear accumulator
+			H .MINUS1. D	; calculate -1 * 1 = 1
+			V .ONE. D
+			E ;+3 F		; < 0: fail
+			S .TWO. D
+			G ;+2 F		; = 0: pass
+.ERR34.			Z34F
+
+
+
+;  -65536 * -65536 = -65536
+
+       	      	        T .SPARE. D	; clear accumulator
+		       	H .MAXNEG. D	
+		       	V .MAXNEG. D
+		       	G ;+2 F		
+.ERR35.		       	Z35F            ; >= 0: fail
+		       	S .MAXNEG. D
+		       	E ;+2 F		; = 0: pass
+		
+; PAT13 * PAT13 = PAT14
+
+			T .SPARE. D	; clear accumulator
+		       	A .PAT14. D
+		       	H .PAT13. D	
+		       	N .PAT13. D
+		       	E ;+2 F
+.ERR36.		       	Z36F		; < 0: fail
+		       	S .ZERO. D
+		       	E ;+2 F		; = 0: pass
+.ERR37.		       	Z37F
+
+; PAT15 * PAT16 = PAT17
+
+		      T .SPARE. D
+		      S .PAT17. D
+		      H .PAT15. D
+		      V .PAT16. D
+		      E ;+2 F
+		      Z0F		; < 0: fail
+		      S .ZERO. D
+		      E ;+2 F		; = 0: pass
+.ERR38.		      Z38F
+
+; case 0 PAT18 * PAT19 = PAT20
+
+       	             T .SPARE. D
+		     H .PAT18. D
+		     V .PAT19. D
+		     L 0 F		; shift left 13 places
+		     L 0 F		; shift left 26 places
+		     L 128 F		; shift left 35 places
+		     S .PAT20. D
+		     E ;+2 F
+.ERR39.		     Z39F		; < 0: fail
+		     S .ZERO. D
+		     E ;+2 F		; = 0: pass
+.ERR40.		     Z40F
+
+
+; FUNCTION TEST - Transfer Unit / Short numbers
+
+.TRANSFERTESTS.
+
+; PAT21 + PAT22 = -1
+
+       	             T .SPARE. F
+		     A .PAT21. F
+		     A .PAT22. F
+		     G ;+2 F
+.ERR41.		     Z41F		; >= 0: fail
+		     A .ONE. F
+		     E ;+2 F		; = -1: pass
+.ERR42.		     Z42F
+
+; PAT21 * PAT22 = PAT23
+
+       	       	     T .SPARE. F
+	       	     H .PAT21. F
+	       	     V .PAT22. F
+	       	     G ;+2 F
+.ERR43.	       	     Z43F
+	       	     S .PAT23. D
+	       	     E ;+2 F
+.ERR44.	       	     Z44F       
+
+; FUNCTION TEST - T and U orders
+
+.TUTESTS.
+
+       	             T .SPARE. D
+		     A .MINUS1. D
+		     T .SPARE. D
+		     E ;+2 F		; < 0: fail
+.ERR45.		     Z45F		
+		     S .ONE. D
+		     G ;+2 F		; = 0: pass
+.ERR46.		     Z46F
+		     A .ONE. D
+		     A .SPARE. D
+		     G ;+2 F		; >= 0: fail
+.ERR47.		     Z47F		
+		     A .ONE. D
+		     E ;+2 F		; =-1: pass
+.ERR48.		     Z48F
+		     A .MINUS1. D
+		     U .SPARE. D
+		     S .SPARE. D
+		     E ;+2 F		; < 0: fail
+.ERR49.		     Z49F
+		     S .ONE. F
+		     G .START. F	; = 0: pass	
+.ERR50.		     Z50F	  	
+
+
+; data - align on even address
+
+@
+
+.SPARE.               +0L
+.ZERO.      	      +0L
+.ONE.       	      +1L
+.TWO.		      +2L
+.MINUS1.    	      -1L
+.MAXPOS.	      B01111111111111111111111111111111111L
+.MAXNEG.	      B10000000000000000000000000000000000L
+
+.PAT1.                B01010101010101010101010101010101010L
+.PAT2.                B10101010101010101010101010101010101L
+
+.PAT3.		      B10000011111100000111111100000011111L
+.PAT4.		      B11111110000011111110000011111111111L
+.PAT5.		      B10000010000000000110000000000011111L
+
+.PAT6.                B10101010101010101010101010101010101L
+.PAT7.                B01010101010101010101010101010101010L
+.PAT8.                B10101010101010101010101010101010100L
+
+.PAT9.                B10101010101010101010101010101010101L
+.PAT10.               B11010101010101010101010101010101010L
+.PAT11.		      B01010101010101010101010101010101010L
+.PAT12.		      B00101010101010101010101010101010101L
+
+.PAT13.		      B10110011001100110100000000000000000L
+.PAT14.		      B00101110000101000110101110000101001L
+
+.PAT15.		      B10110011001100110100000000000000000L
+.PAT16.               B00000000000000000100000000000000000L
+.PAT17.               B11111111111111111101100110011001101L
+
+.PAT18.		      B11111111111111111110110011001100110L
+.PAT19.               B00000000000000000000000000000000010L
+.PAT20.               B11111111111111111011001100110011000L
+
+
+.PAT21.		      B10101010101010101      
+.PAT22.		      B01010101010101010
+
+
+.PAT23.		      B11000111000111001000111000111001000L
+
+
+
+	  

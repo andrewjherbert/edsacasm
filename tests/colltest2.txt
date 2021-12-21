@@ -8,13 +8,13 @@
 		       C .PAT2. D
 		       S .PAT3. D
 		       G .ERR1. F		; p1 & p2 - p3 < 0 -- wrong
-		       S .ONE. D
-		       G .START. F		; p1 & p2 -p3 -1 < 0 -- Pass
+		       S .ZERO. D
+		       E .START. F		; p1 & p2 -p3 -1 < 0 -- Pass
 .ERR1.                 Z1F
 
 
 @
-.ONE.       	      +1L
+.ZERO.       	      +0L
 .PAT1.		      B10000011111100000111111100000011111L
 .PAT2.		      B11111110000011111110000011111111111L
 .PAT3.		      B10000010000000000110000000000011111L

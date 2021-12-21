@@ -7,8 +7,8 @@
 		       H .ZERO. D
 		       C .MINUS1. D
 		       G .ERR1. F		; 0 & -1 < 0 -- wrong
-		       S .ONE. D
-		       G ;+2 F			; 0 & -1 - 1 < 0 -- Pass
+		       S .ZERO. D
+		       E ;+2 F			; -(0 & -1) >= 0 -- Pass
 .ERR1.                 Z1F
 
 ; collate -1 & 0 = 0
@@ -16,8 +16,8 @@
 		       H .MINUS1. D
 		       C .ZERO. D
 		       G .ERR2. F		; -1 & 0 < 0 -- wrong
-		       S .ONE. D
-		       G ;+2 F			; -1 & 0 - 1 < 0 -- Pass
+		       S .ZERO. D
+		       E ;+2 F			; (--1 & 0) >= 0 -- Pass
 .ERR2.                 Z2F
 
 ; collate -1 & -1 = -1

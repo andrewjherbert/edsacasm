@@ -2,7 +2,7 @@
 
 .START.
 
-; case 0 PAT1 * PAT2 = PAT3
+;  PAT1 * PAT2 = PAT3
 
        	        T .SPARE. D
 		S .PAT3. D
@@ -10,21 +10,8 @@
 		V .PAT2. D
 		E ;+2 F
 		Z0F		; < 0: fail
-		S .ONE. D
-		G .START. F	; = 0: pass
-		Z1F
-
-; case 1 PAT1 * PAT2 = PAT3
-
-       	        T .SPARE. D
-		S .PAT3. D
-		H .PAT1. D
-		V .PAT2. D
-		Z9F
-		E ;+2 F
-		Z0F		; < 0: fail
-		S .ONE. D
-		G .START. F	; = 0: pass
+		S .ZERO. D
+		E .START. F	; = 0: pass
 		Z1F
 
 ; data - align on even address
@@ -33,6 +20,7 @@
 .PAT2.          B00000000000000000100000000000000000L
 .PAT3.          B11111111111111111101100110011001101L
 .ONE.		+1L
+.ZERO.		+0L
 .SPARE.		+0L
 
 
