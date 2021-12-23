@@ -1,4 +1,4 @@
-# EDSAC Test Program Assembler - Andrew Herbert - 21 December 2021
+# EDSAC Test Program Assembler - Andrew Herbert - 22 December 2021
 
 # Generates binary images for loading into the bottom EDSAC store tank
 # (locations 0-63) using Tom Toth's SSI unit.
@@ -62,7 +62,7 @@ def assembler():
         inFile = sys.stdin.read()
     else:
         try:
-            inFile = open(inFilePath, 'rt').read()
+            inFile = open(inFilePath, 'rt', encoding='utf-8-sig').read()
         except:
             fail("Cannot open input")
             sys.exit(1)
@@ -73,7 +73,7 @@ def assembler():
         outFile = sys.stdout
     else:
         try:
-            outFile = open(outFilePath, 'wt')
+            outFile = open(outFilePath, 'wt', encoding='ascii')
         except:
             fail("Cannot open output")
             sys.exit(1)
@@ -151,7 +151,7 @@ def labelledWord(f, i, p):
     elif f[i] == '\n':
         return newline(f, i)
     else:
-        syntaxError(f, "Unexpected symbol '" + f[i] + "'")
+        syntaxError(f, "Unexpected symbol '{}' ({})".format(f[i], ord(f[i])))
     
 # ---- labelDef ---- #
 
