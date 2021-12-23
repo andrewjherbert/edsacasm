@@ -8,8 +8,8 @@
 		H .ZERO. D	; calculate 0 * 0
 		V .ZERO. D
 		G ;+3 F		; < 0: fail
-		S .ZERO. D
-		E ;+2 F		; = 0: pass
+		S .ONE. D
+		G ;+2 F		; = 0: pass
 		Z0F
 
 ; case 1: 0 * 1 = 0
@@ -18,8 +18,8 @@
 		H .ZERO. D	; calculate 0 * 0
 		V .ONE. D
 		G ;+3 F		; < 0: fail
-		S .ZERO. D
-		E ;+2 F		; = 0: pass
+		S .ONE. D
+		G ;+2 F		; = 0: pass
 		Z1F
 
 ; case 2: 0 * -1 = 0
@@ -28,8 +28,8 @@
 		H .ZERO. D	; calculate 0 * 0
 		V .MINUS1. D
 		G ;+3 F		; < 0: fail
-		S .ZERO. D
-		E .START. F	; = 0: pass
+		S .ONE. D
+		G .START. F	; = 0: pass
 		Z2F
 
 ; data - align on even address

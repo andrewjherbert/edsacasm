@@ -10,8 +10,8 @@
 		V .PAT2. D
 		E ;+2 F
 		Z0F		; < 0: fail
-		S .ZERO. D
-		E .START. F	; = 0: pass
+		S .ONE. D
+		G .START. F	; = 0: pass
 		Z1F
 
 ; data - align on even address
@@ -20,7 +20,6 @@
 .PAT2.          B00000000000000000100000000000000000L
 .PAT3.          B11111111111111111101100110011001101L
 .ONE.		+1L
-.ZERO.		+0L
 .SPARE.		+0L
 
 

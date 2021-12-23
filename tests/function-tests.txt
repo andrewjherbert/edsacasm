@@ -1,4 +1,4 @@
-; EDSAC FUNCTIONAL TEST PROGRAM - Andrew Herbert - 21 Decdmber 2021
+; EDSAC FUNCTIONAL TEST PROGRAM - Andrew Herbert - 22 December 2021
 ;
 ; (Approx 350 locations)
 
@@ -102,8 +102,8 @@
       	       	       T .SPARE. D
 		       S .ZERO. D
 		       G .ERR11. F		; 0 - 0 < 0 -- Fail
-		       S .ZERO. D
-		       E ;+2 F                  ; 0 - 0 - = 0 -- Pass
+		       S .ONE. D
+		       G ;+2 F                  ; 0 - 0 - = 0 -- Pass
 .ERR11.		       Z11F	 		; Fail
 
 ; subtract 1 - 1 = 0
@@ -111,8 +111,8 @@
 		       A .ONE. D
 		       S .ONE. D
 		       G .ERR12. F		; 1 - 1 < 0 -- Fail
-		       S .ZERO. D
-		       E ;+2 F			; 1 - 1 = 0 -- Pass
+		       S .ONE. D
+		       G ;+2 F			; 1 - 1 = 0 -- Pass
 .ERR12.		       Z12F	 		; Fail
 
 ;subtract  -1 - 0 = -1
@@ -141,8 +141,8 @@
 		       H .ZERO. D
 		       C .MINUS1. D
 		       G .ERR15. F		; 0 & -1 < 0 -- wrong
-		       S .ZERO. D
-		       E ;+2 F			; -(0 & -1) >= 0 -- Pass
+		       S .ONE. D
+		       G ;+2 F			; (0 & -1) = 0 -- Pass
  .ERR15.               Z15F
 
 ; collate -1 & 0 = 0
@@ -150,8 +150,8 @@
 		       H .MINUS1. D
 		       C .ZERO. D
 		       G .ERR16. F		; -1 & 0 < 0 -- wrong
-		       S .ZERO. D
-		       E ;+2 F			; (--1 & 0) >= 0 -- Pass
+		       S .ONE. D
+		       G ;+2 F			; (--1 & 0) >= 0 -- Pass
 .ERR16.                Z16F
 
 ; collate -1 & -1 = -1
@@ -183,8 +183,8 @@
 			L 0 D		; shift left 1 place
 			S .PAT7. D
 			G .ERR19. F     ; < 0: fail
-			S .ZERO. D
-			E ;+2 F		; = 0: pass   
+			S .ONE. D
+			G ;+2 F		; = 0: pass   
 
 .ERR19.			Z19F
 
@@ -194,8 +194,8 @@
 			L 0 D
 			S .PAT8. D
 			G .ERR20. F	; >= 0: fail
-			S .ZERO. D
-			E ;+2 F		; = 0: pass
+			S .ONE. D
+			G ;+2 F		; = 0: pass
 .ERR20.			Z20F
 
 
@@ -286,8 +286,8 @@
 		 	H .ZERO. D	; calculate 0 * 0
 			V .ZERO. D
 			G ;+3 F		; < 0: fail
-			S .ZERO. D
-			E ;+2 F		; = 0: pass
+			S .ONE. D
+			G ;+2 F		; = 0: pass
 .ERR29.			Z29F
 
 ;  0 * 1 = 0
@@ -296,8 +296,8 @@
 			H .ZERO. D	; calculate 0 * 0
 			V .ONE. D
 			G ;+3 F		; < 0: fail
-			S .ZERO. D
-			E ;+2 F		; = 0: pass
+			S .ONE. D
+			G ;+2 F		; = 0: pass
 .ERR30.			Z30F
 
 ; 0 * -1 = 0
@@ -306,8 +306,8 @@
 			H .ZERO. D	; calculate 0 * 0
 			V .MINUS1. D
 			G ;+3 F		; < 0: fail
-			S .ZERO. D
-			E ;+2 	 F	; = 0: pass
+			S .ONE. D
+			G ;+2 	 F	; = 0: pass
 .ERR31.			Z31F
 
 
@@ -361,8 +361,8 @@
 		       	N .PAT13. D
 		       	E ;+2 F
 .ERR36.		       	Z36F		; < 0: fail
-		       	S .ZERO. D
-		       	E ;+2 F		; = 0: pass
+		       	S .ONE. D
+		       	G ;+2 F		; = 0: pass
 .ERR37.		       	Z37F
 
 ; PAT15 * PAT16 = PAT17
@@ -373,8 +373,8 @@
 		      V .PAT16. D
 		      E ;+2 F
 		      Z0F		; < 0: fail
-		      S .ZERO. D
-		      E ;+2 F		; = 0: pass
+		      S .ONE. D
+		      G ;+2 F		; = 0: pass
 .ERR38.		      Z38F
 
 ; case 0 PAT18 * PAT19 = PAT20
@@ -388,8 +388,8 @@
 		     S .PAT20. D
 		     E ;+2 F
 .ERR39.		     Z39F		; < 0: fail
-		     S .ZERO. D
-		     E ;+2 F		; = 0: pass
+		     S .ONE. D
+		     G ;+2 F		; = 0: pass
 .ERR40.		     Z40F
 
 

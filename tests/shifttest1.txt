@@ -8,8 +8,8 @@
 			L 0 D		; shift left 1 place
 			S .PAT2. D
 			G .ERR1. F      ; < 0: fail
-			S .ZERO. D
-			E ;+2 F		; = 0: pass   
+			S .ONE. D
+			G ;+2 F		; = 0: pass   
 
 .ERR1.			Z1F
 
@@ -19,8 +19,8 @@
 			L 0 D
 			S .PAT3. D
 			G .ERR2. F	; >= 0: fail
-			S .ZERO. D
-			E .START. F	; = 0: pass
+			S .ONE. D
+			G .START. F	; = 0: pass
 
 .ERR2.			Z2F
 
@@ -29,7 +29,7 @@
 
 ; data - align on even address
 @
-.ZERO.      	      +0L
+.ONE.      	      +1L
 .PAT1.                B10101010101010101010101010101010101L
 .PAT2.                B01010101010101010101010101010101010L
 .PAT3.                B10101010101010101010101010101010100L

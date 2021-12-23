@@ -6,8 +6,8 @@
       	       	       T .SPARE. D
 		       S .ZERO. D
 		       G .ERR1. F		; 0 - 0 < 0 -- Fail
-		       S .ZERO. D
-		       E ;+2 F                  ; 0 - 0 - = 0 -- Pass
+		       S .ONE. D
+		       G ;+2 F                  ; 0 - 0 - = 0 -- Pass
 .ERR1.		       Z1F	 		; Fail
 
 
@@ -16,8 +16,8 @@
 		       A .ONE. D
 		       S .ONE. D
 		       G .ERR2. F		; 1 - 1 < 0 -- Fail
-		       S .ZERO. D
-		       E ;+2 F			; 1 - 1 = 0 -- Pass
+		       S .ONE. D
+		       G ;+2 F			; 1 - 1 = 0 -- Pass
 .ERR2.		       Z2F	 		; Fail
 
 ; -1 - 0 = -1
