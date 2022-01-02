@@ -24,11 +24,6 @@ edsacasm tests/multtest5.txt >tests/multtest5.dat
 edsacasm tests/transftest.txt >tests/transftest.dat
 edsacasm tests/tutest.txt >tests/tutest.dat
 edsacasm tests/function-tests.txt >tests/function-tests.dat -t=32
-
-
-
-
-
-
+edsacasm tests/storetest.txt >tests/storetest.dat -t=32
 
 

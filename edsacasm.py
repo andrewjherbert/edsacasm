@@ -1,4 +1,4 @@
-# EDSAC Test Program Assembler - Andrew Herbert - 22 December 2021
+# EDSAC Test Program Assembler - Andrew Herbert - 2 January 2022
 
 # Generates binary images for loading into the bottom EDSAC store tank
 # (locations 0-63) using Tom Toth's SSI unit.
@@ -183,12 +183,11 @@ def label(f, i, p): # assemble label
 def number(f, i):
     global cpa, store
     #print("***Number", i, '"', f[i], '"')
-    sign = f[i]
     value = 0
     j = i+1
     while f[j].isdigit():
         j += 1
-    value = int(f[i:j]) * +1 if sign == '+' else -1
+    value = int(f[i:j]) 
     #print("***Result =", value)
     return storeNumber (f, j, value)
 
@@ -378,7 +377,7 @@ def dumpStore(f, list):
         f.write('\n')
     for i in range(len(store)):
         if list:
-            f.write("%2d " % i)
+            f.write("%4d " % i)
         f.write(format(store[i], "018b"))
         if list:
             f.write("  ")
