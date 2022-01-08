@@ -1,0 +1,23 @@
+
+.LOOP.	T .SPARE. F
+	A .SUM. F
+.PATCH.	A .TAB. F
+	T .SUM. F
+	A .PATCH. F
+	A .+2. F
+	U .PATCH. F
+	S .END. F
+	G .LOOP. F
+	T .SPARE. F
+	A .SUM. F
+	Z F
+	
+
+
+.+2.	+2
+.SPARE.	+0
+.SUM.	+0
+
+.TAB. +1 +2 +3 +4 +5
+
+.END.	A ;+0 F
