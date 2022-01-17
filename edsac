@@ -1,2 +1,2 @@
 #/bin/sh
-../../CProgs/edsac/edsac $*
+../emulator/edsac $*
