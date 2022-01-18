@@ -1,0 +1,29 @@
+; Program ACCUTUNE1
+; This program is intended to be run with the output from ASU2 (Ch17) disconnected.
+; The output from DUIII can be connected to either A or B or both inputs of Half Adder 1
+; The unconnected input must be connected to a logic 0. 
+; The program will generate successively longer runs of logic 1s
+; which will assist in adjusting all the Delay Line Pulse Amplifier (DLPA) circuits from DUIII through
+; to ASU2. NWB 13/01/22
+
+; Start
+
+.START.	T .SCRATCH. D	;Clean up accumulator
+	A .BITS8. D	;Bottom 8 bits in double word
+	A .BITS16. D
+	A .BITS24. D
+	A .BITS32. D
+	A .BITS35. D
+	G .START. F	;Always go back no matter what
+	E .START. F	;Its a signal generator
+	Z1F		;Ring the bell something is adrift
+; Data - align on even address
+@
+.SCRATCH.	B0L
+.BITS8.		B11111111L
+.BITS16.		B1111111111111111L
+.BITS24.		B111111111111111111111111L
+.BITS32.		B11111111111111111111111111111111L
+.BITS35.		B11111111111111111111111111111111111L
+
+; End

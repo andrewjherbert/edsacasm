@@ -1,5 +1,6 @@
 #!bin/sh
 set -x
+edsacasm tests/accutune1.txt >tests/accutune1.dat
 edsacasm tests/belltest.txt >tests/belltest.dat
 edsacasm tests/xtest.txt >tests/xtest.dat
 edsacasm tests/jmptest.txt >tests/jmptest.dat
