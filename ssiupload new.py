@@ -1,10 +1,5 @@
 
-#Transfer EDSAC tank 0 images to SSI  - Andrew Herbert 15/02/2022
-
-# 15/02/2022 changes
-# baud rate default set to 19200
-# checks for bogus characters in input
-# doesn't transmit newlines
+#Transfer EDSAC tank 0 images to SSI  - Andrew Herbert 08/02/2021
 
 # ssiupload device infile
 
@@ -13,14 +8,17 @@ import serial
 import sys
 import time
 
+xoff = 19
+xon = 17
+
 # ---- ssiUpload ---- #
 
-def ssiUpload (filePath, devicePath, rate):
+def ssiUpload (filePath, devicePath, baud):
 
     # Set up serial port
     ser = serial.Serial()
     ser.port     = devicePath
-    ser.baudrate = rate
+    ser.baudrate = baud
 
     # Open serial port
     try:
@@ -63,7 +61,7 @@ def ssiUpload (filePath, devicePath, rate):
 
     print("Select TEXTFILE to load copy to store")
 
-    ssiWait(ser, 30)  # clear any output from SSI
+    ssiWait(ser)  # clear any output from SSI
     ssiEcho(ser)
 
     input("Type RETURN to exit from ssiupload")
@@ -73,29 +71,25 @@ def ssiUpload (filePath, devicePath, rate):
 
 # ---- ssiWait ----#
 
-def ssiWait(ser, secs):
+def ssiWait(ser):
     # print("Waiting for SSI input")
-    for ticks in range(secs*1000):
+    for ticks in range(200):
         if ser.in_waiting == 0:
-            time.sleep(0.001)
+            time.sleep(0.01)
         else:
             return
-        
+            
 # ---- ssiEcho ---- #
 
 def ssiEcho(ser):
     # echo any messages coming back
     print("Looking for SSI input")
     while ser.in_waiting > 0:
-        b = ser.read (1)
-        print(b.decode('utf-8'), end="")
-        # wait up to 2 secs for output to come
-        ticks = 0
-        while ser.in_waiting == 0:
-            ticks += 1
-            if ticks > 2000:
-                break
-            time.sleep(0.001) # allow time for SSI to keep up
+        b = ser.read(1)
+        if b != XON and b != XOFF: # ignore XON/OFF
+            print(b.decode('ascii'), end="")
+        if ser.in_waiting == 0:
+            time.sleep(0.1) # allow time for SSI to keep up
     print("SSI input cleared")
 
 # ---- ssiSend ---- #
@@ -104,16 +98,26 @@ def ssiSend(buf, ser):
     # print("Sending data to SSI")
     count = 0
     for ch in buf:
+        # check for XOFF
+        if ser.in_waiting > 0:
+            b = ser.read(1)
+            if b == 19: # look for XOFF
+                while ser.in_waiting == 0:
+                    time.sleep(0.005)
+                b = ser.read(1)
+                if b != 17: # wait for XON
+                    print("XOFF not follwed by XON")
+                    sys.exit(1)
         print(chr(ch), end='')
-        if chr(ch) != '0' and chr(ch) != '1' and chr(ch) != '\n':
-            print("Error in  input - found \'", chr(ch), "\'")
-            sys.exit(1)
+        if chr(ch) == '0' or chr(ch) == '1':
+            count += 1
         while ser.out_waiting != 0:
             time.sleep (0.005)
-        if chr(ch) != '\n':
-            if ser.write (bytes([ch])) != 1:
-                sys.stderr.write("ssiupload: ser.write failed\n")
-                sys.exit(1)
+        if ser.write (bytes([ch])) != 1:
+            sys.stderr.write("ssiupload: ser.write failed\n")
+            sys.exit(1)
+        else:
+            time.sleep(0.005)
     # print("ssiupload: Buffer sent", count, "bits")
 
 # ---- main program ---- #
@@ -121,10 +125,9 @@ def ssiSend(buf, ser):
 parser = argparse.ArgumentParser(
 description='Transfer tank 0 image via SSI')
 parser.add_argument('file', help='file to upload')
-parser.add_argument('-d', '--device', help='serial device',
+parser.add_argument('-d', '--device', type=int, help='serial device',
                      default='/dev/tty.usbmodem141401')
-parser.add_argument('-b', '--baud', type=int, help='baud rate',
-                    default=19200)
+parser.add_argument('-b', '--baud', help='baud rate', default=19200)
 args = parser.parse_args()
 #print("Arguments:", args)
 devicePath = args.device
