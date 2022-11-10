@@ -1,13 +1,14 @@
 ; FUNCTION TEST - Subtraction part 2
 
-.START.
+.START.                Z0F
 
+.LOOP.
 ; subtract 0 - 1 = -1
       	       	       T .SPARE. D
 		       S .ONE. D
 		       E .ERR1. F		; 0 - 1 >= 0 -- Fail
 		       A .ONE. D
-		       E .START. F		;0 - 1 + 1 >= 0 -- Pass
+		       E .LOOP. F		; 0 - 1 + 1 >= 0 -- Pass
 .ERR1.                 Z1F
 
 

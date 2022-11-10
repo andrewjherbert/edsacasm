@@ -1,7 +1,8 @@
 ; FUNCTION TEST -  Multiplication 5
 
-.START.
+.START.         Z0F
 
+.LOOP.
 ; PAT1 * PAT2 = PAT3
 
        	        T .SPARE. D
@@ -12,10 +13,10 @@
 		L 128 F		; shift left 35 places
 		S .PAT3. D
 		E ;+2 F
-		Z0F		; < 0: fail
+		Z1F		; < 0: fail
 		S .ONE. D
-		G .START. F	; = 0: pass
-		Z1F
+		G .LOOP. F	; = 0: pass
+		Z2F
 
 
 ; data - align on even address

@@ -2,7 +2,9 @@
 
 ; case 0 - no rounding required
 
-.START.    T .SPARE. D
+.START.    Z0F
+
+.LOOP.     T .SPARE. D
 	   A .ZERO. D
 	   Y 0 D
 	   G .ERR1. F		; < 0: fail
@@ -10,7 +12,7 @@
 	   S .ONE. D
 	   G .ERR1. F
 	   E ;+2 F              ; = 0: pass
-.ERR1.	   Z0F
+.ERR1.	   Z1F
 
 ; case 1 - rounding required
 
@@ -20,8 +22,8 @@
 	   Y 0 D
 	   G .ERR2. F           ; < 0: fail
 	   S .ONE. D
-	   G .START. F
-.ERR2.	   Z1F
+	   G .LOOP. F
+.ERR2.	   Z2F
 
 @
 .ZERO.    +0L

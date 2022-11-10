@@ -1,0 +1,35 @@
+; program INSTRUCTION LOOP
+
+.START.	  T .SPARE. D
+.LOOP.    X1F
+	  X2F
+	  X3F
+	  X4F
+	  X5F
+	  X6F
+	  X7F
+	  X8F
+	  X9F
+	  X10F
+	  X11F
+	  X12F
+	  X13F
+	  X14F
+	  X15F
+	  Z0F
+	  X17F
+	  X18F
+	  X19F
+	  X20F
+	  X21F
+	  X22F
+	  X23F
+	  X24F
+	  X25F
+	  X26F
+	  X27F
+	  X29F
+	  E .LOOP. F	; 29
+.SPARE.	  +0            ; 30 - Data
+	  +0		; 31 - Data
+; END

@@ -1,7 +1,8 @@
 ; FUNCTION TEST -  Shifting part 1
 
-.START.
+.START.                 Z0F
 
+.LOOP.
 ; shift PAT1 left 1 place = PAT2
 			T .SPARE. D
 			A .PAT1. D
@@ -20,7 +21,7 @@
 			S .PAT3. D
 			G .ERR2. F	; >= 0: fail
 			S .ONE. D
-			G .START. F	; = 0: pass
+			G .LOOP. F	; = 0: pass
 
 .ERR2.			Z2F
 

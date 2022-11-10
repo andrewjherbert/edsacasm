@@ -1,7 +1,8 @@
 ; FUNCTION TEST - Collation part 2
 
-.START.
+.START.                Z0F
 
+.LOOP.
 ; collate PAT1 & PAT2 = PAT3
       	       	       T .SPARE. D
 		       H .PAT1. D
@@ -9,8 +10,8 @@
 		       S .PAT3. D
 		       G .ERR1. F		; p1 & p2 - p3 < 0 -- wrong
 		       S .ONE. D
-		       G .START. F		; p1 & p2 - p3 - 1 < 0 -- Pass
-.ERR1.                 Z1F
+		       G .LOOP. F		; p1 & p2 - p3 - 1 < 0 -- Pass
+.ERR1.                 ZF
 
 
 @

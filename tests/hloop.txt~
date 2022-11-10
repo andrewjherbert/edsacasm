@@ -1,0 +1,35 @@
+; program INSTRUCTION LOOP
+
+.START. H 0 D ;00
+	H 0 D ;01
+	H 0 D ;02
+	H 0 D ;03
+	H 0 D ;04
+	H 0 D ;05
+	H 0 D ;06
+	H 0 D ;07
+	H 0 D ;08
+	H 0 D ;09
+	H 0 D ;10
+	H 0 D ;11
+	H 0 D ;12
+	H 0 D ;13
+	H 0 D ;14
+	H 0 D ;15
+	H 0 D ;16
+	H 0 D ;17
+	H 0 D ;18
+	H 0 D ;19
+	H 0 D ;20
+	H 0 D ;21
+	H 0 D ;22
+	H 0 D ;23
+	H 0 D ;24
+	H 0 D ;25
+	H 0 D ;26
+	H 0 D ;27
+	H 0 D ;28
+	H 0 D ;29
+	H 0 D ;30
+	H 0 D ;31
+; END

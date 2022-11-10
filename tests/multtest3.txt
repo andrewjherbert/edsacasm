@@ -1,14 +1,15 @@
 ; FUNCTION TEST -  Multiplication 3
 
-.START.
+.START.         Z0F
 
+.LOOP.
 ; case 0: -65536 * -65536 = -65536
 
        	      	T .SPARE. D	; clear accumulator
 		H .MAXNEG. D	
 		V .MAXNEG. D
 		G ;+2 F		
-		Z0F             ; >= 0: fail
+		Z1F             ; >= 0: fail
 		S .MAXNEG. D
 		E ;+2 F		; = 0: pass
 		
@@ -19,10 +20,10 @@
 		H .PAT1. D	
 		N .PAT1. D
 		E ;+2 F
-		Z1F		; < 0: fail
+		Z2F		; < 0: fail
 		S .ONE. D
-		G .START. F	; = 0: pass
-		Z2F
+		G .LOOP. F	; = 0: pass
+		Z3F
 
 ; data - align on even address
 @

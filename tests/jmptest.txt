@@ -1,7 +1,9 @@
 
 ; FUNCTION TEST - JUMPS
 
-.START.			T .SPARE.D		; Clear Acc
+.START.			Z0F
+
+.LOOP.                  T .SPARE.D		; Clear Acc
 
 ;  01: jump if positive on 0
 
@@ -34,7 +36,7 @@
 			E ;+2 F
 			Z5F
 
-       		E .START. F			; go back to beginning
+       		       E .LOOP. F		; go back to beginning
 @
 .MAXPOS.	B01111111111111111111111111111111111L
 .MAXNEG.	B10000000000000000000000000000000000L

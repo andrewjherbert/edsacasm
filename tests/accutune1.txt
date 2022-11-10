@@ -16,7 +16,7 @@
 	A .BITS35. D
 	G .START. F	;Always go back no matter what
 	E .START. F	;Its a signal generator
-	Z1F		;Ring the bell something is adrift
+	ZF		;Ring the bell something is adrift
 ; Data - align on even address
 @
 .SCRATCH.	B0L

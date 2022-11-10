@@ -1,6 +1,8 @@
 #!bin/sh
 set -x
-edsacasm tests/scratch.txt >tests/scratch.dat
+edsacasm tests/nigel2.txt >tests/nigel2.dat
+edsacasm tests/nigel3.txt >tests/nigel3.dat
+edsacasm tests/nigel7.txt >tests/nigel7.dat
 edsacasm tests/accutune1.txt >tests/accutune1.dat
 edsacasm tests/belltest.txt >tests/belltest.dat
 edsacasm tests/xtest.txt >tests/xtest.dat
@@ -27,5 +29,9 @@ edsacasm tests/transftest.txt >tests/transftest.dat
 edsacasm tests/tutest.txt >tests/tutest.dat
 edsacasm tests/function-tests.txt >tests/function-tests.dat -t=32
 edsacasm tests/storetest.txt >tests/storetest.dat -t=32
+edsacasm tests/hloop.txt >tests/hloop.dat
+edsacasm tests/ztest.txt >tests/ztest.dat
+
+
 
 

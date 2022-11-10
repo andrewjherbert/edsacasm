@@ -2,7 +2,8 @@
 
 ; Loop continuously counting up from zero
 
-.START.    T .ZERO. D      ; Clear Accumulator
+.START.    Z0F
+           T .ZERO. D      ; Clear Accumulator
 .LOOP.     A .ONE.  D      ; Increment
            G .LOOP. F      ; Jump whatever
 	   E .LOOP. F

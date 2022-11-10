@@ -1,7 +1,8 @@
 ; FUNCTION TEST -  Shifting part 3
 
-.START.
+.START.                 Z0F
 
+.LOOP.
 ; case 1: -65536 shift right 70 places (acc = 71 bits) sends top bit to bottom
 			T .SPARE. D
 			A .MAXNEG. D
@@ -27,7 +28,7 @@
 			S .MAXNEG. D
 			G ;+3 F		; < 0:  fail
 			S .ONE. D
-			G .START. F     ; = 0:  pass
+			G .LOOP. F     ; = 0:  pass
 			Z4F
 
 

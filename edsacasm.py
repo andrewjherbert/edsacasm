@@ -25,7 +25,7 @@
 
 # Numbers and orders are stored as short numbers (17 bits) ubless followed by L in 
 # which case they are assembled as 35 bit long numbers in the next two succeeding
-# locations.  The @ symbol should be used befoe the label to foce alignment on a
+# locations.  The @ symbol should be used before the label to foce alignment on a
 # even address.
 
 import sys

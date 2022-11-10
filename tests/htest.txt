@@ -1,0 +1,12 @@
+; Test Multiplier register
+
+.START.
+
+		       H .PAT1. D
+		       ZF
+
+
+; data - align on even address
+@
+.PAT1.                B01010101010101010101010101010101010L
+

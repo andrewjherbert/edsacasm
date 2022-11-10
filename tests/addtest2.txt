@@ -1,11 +1,13 @@
 ; FUNCTION TEST -  Addition part 2
 
-.START.
+.START.                Z0F
 
+.LOOP.
 ; add PAT1+ PAT2 = -1
       	       	       T .SPARE. D
 		       A .PAT1. D
 		       A .PAT2. D
+		       Z0F
 		       E ;+4 F			; P1+P2 >= 0 -- wrong
 		       A .ONE. D
 		       G ;+2 F                  ; P1+P2+1 < 0 -- wrong
@@ -20,7 +22,7 @@
 		       E ;+4 F                  ; P1+P1+P1 >= 0 -- wrong
 		       A .TWO. D                ; P1+P1+P1+2 < 0 -- wrong
 		       G ;+2 F
-		       E .START. F
+		       E .LOOP. F
 		       Z2F
 
 

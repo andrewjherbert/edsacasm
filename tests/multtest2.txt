@@ -1,7 +1,8 @@
 ; FUNCTION TEST -  Multiplication 2
 
-.START.
+.START.         Z0F
 
+.LOOP.
 ; case 0: 1 * 1 = 1
 
        	      	T .SPARE. D	; clear accumulator
@@ -10,7 +11,7 @@
 		G ;+3 F		; < 0: fail
 		S .TWO. D
 		G ;+2 F		; = 0: pass
-		Z0F
+		Z1F
 
 ; case 1: -1 * -1 = 1
 
@@ -20,7 +21,7 @@
 		G ;+3 F		; < 0: fail
 		S .TWO. D
 		G ;+2 F		; = 0: pass
-		Z0F
+		Z2F
 
 ; CASE 2: -1 * 1 = -1
 
@@ -29,8 +30,8 @@
 		V .ONE. D
 		E ;+3 F		; < 0: fail
 		S .TWO. D
-		G .START. F		; = 0: pass
-		Z0F
+		G .LOOP. F	; = 0: pass
+		Z3F
 
 ; data - align on even address
 @

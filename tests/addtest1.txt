@@ -1,13 +1,9 @@
 ; FUNCTION TEST -  Addition part 1
 
 .START.
+                        Z0F
 
-T .SPARE. D
-A .+3. D
-A .+5. D
-E .START. F
-G .START. F
-
+.LOOP.
 ; add 0 + 0
 			T .SPARE. D
 			A .ZERO. D		; 0 + 0
@@ -15,7 +11,7 @@ G .START. F
 			A .MINUS1. D		; 0 + 0 - 1
 			E ;+2 F			; 0 + 0 - 1 >= 0 -- wrong
 			G ;+2 F			; Pass
-			ZF			; Fail
+			Z1F			; Fail
 
 ; add -1 + 1 = 0
 			T .SPARE. D
@@ -24,8 +20,8 @@ G .START. F
             		G ;+4 F                 ; -1+1 < 0
 			A .MINUS1. D
 			E ;+2 F			; -1+1-1 >= 0 -- wrong
-			G .START. F		; Pass
-			ZF			; Fail
+			G .LOOP. F		; Pass
+			Z2F			; Fail
 
 
 ; data - align on even address

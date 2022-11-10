@@ -1,7 +1,8 @@
 ; FUNCTION TEST - Collation part 1
 
-.START.
+.START.                Z0F
 
+.LOOP.
 ; collate 0 & -1 = 0
       	       	       T .SPARE. D
 		       H .ZERO. D
@@ -26,7 +27,7 @@
 		      C .MINUS1. D
 		      E .ERR2. F		; -1 & -1 >= 0 -- wrong
 		      A .ONE. D
-		      E .START. F		; -1 & -1 + 1 >= 0 -- Pass
+		      E .LOOP. F		; -1 & -1 + 1 >= 0 -- Pass
 .ERR3.		      Z3F
 
 
