@@ -6,18 +6,18 @@
 ;  PAT1 * PAT2 = PAT3
 
        	        T .SPARE. D
-		S .PAT3. D
-		H .PAT1. D
-		V .PAT2. D
-		E ;+2 F
-		Z1F		; < 0: fail
-		S .ONE. D
-		G .LOOP. F	; = 0: pass
-		Z2F
+				S .PAT3. D
+				H .PAT1. D
+				V .PAT2. D
+				E #+2 F
+				Z1F		; < 0: fail
+				S .ONE. D
+				G .LOOP. F	; = 0: pass
+				Z2F
 
 ; data - align on even address
 @
-.PAT1.		B10110011001100110100000000000000000L
+.PAT1.		    B10110011001100110100000000000000000L
 .PAT2.          B00000000000000000100000000000000000L
 .PAT3.          B11111111111111111101100110011001101L
 .ONE.		+1L

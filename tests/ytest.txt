@@ -5,24 +5,24 @@
 .START.    Z0F
 
 .LOOP.     T .SPARE. D
-	   A .ZERO. D
-	   Y 0 D
-	   G .ERR1. F		; < 0: fail
-	   L 0 D                ; check bit 35
-	   S .ONE. D
-	   G .ERR1. F
-	   E ;+2 F              ; = 0: pass
+	       A .ZERO. D
+	       Y 0 D
+	       G .ERR1. F		; < 0: fail
+	       L 0 D            ; check bit 35
+	       S .ONE. D
+	       G .ERR1. F
+	       E #+2 F          ; = 0: pass
 .ERR1.	   Z1F
 
 ; case 1 - rounding required
 
-	   T .SPARE. D
-	   A .ONE. D
-	   R 0 D                ; set bit 35
-	   Y 0 D
-	   G .ERR2. F           ; < 0: fail
-	   S .ONE. D
-	   G .LOOP. F
+	       T .SPARE. D
+	       A .ONE. D
+	       R 0 D            ; set bit 35
+	       Y 0 D
+	       G .ERR2. F       ; < 0: fail
+	       S .ONE. D
+	       G .LOOP. F
 .ERR2.	   Z2F
 
 @

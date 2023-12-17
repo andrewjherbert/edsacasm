@@ -4,24 +4,24 @@
 
 .LOOP.
 ; add PAT1+ PAT2 = -1
-      	       	       T .SPARE. D
+      	       T .SPARE. D
 		       A .PAT1. D
 		       A .PAT2. D
 		       Z0F
-		       E ;+4 F			; P1+P2 >= 0 -- wrong
+		       E #+4 F		; P1+P2 >= 0 -- wrong
 		       A .ONE. D
-		       G ;+2 F                  ; P1+P2+1 < 0 -- wrong
-		       E ;+2 F              	; Pass 
+		       G #+2 F      ; P1+P2+1 < 0 -- wrong
+		       E #+2 F      ; Pass
 		       Z1F	 		; Fail
 
 ; add PAT1 + PAT1 + PAT1 = -2
-      	       	       T .SPARE. D
+      	       T .SPARE. D
 		       A .PAT1. D
 		       A .PAT1. D
 		       A .PAT1. D
-		       E ;+4 F                  ; P1+P1+P1 >= 0 -- wrong
-		       A .TWO. D                ; P1+P1+P1+2 < 0 -- wrong
-		       G ;+2 F
+		       E #+4 F       ; P1+P1+P1 >= 0 -- wrong
+		       A .TWO. D     ; P1+P1+P1+2 < 0 -- wrong
+		       G #+2 F
 		       E .LOOP. F
 		       Z2F
 
@@ -32,8 +32,8 @@
 @
 .ONE.       	      +1L
 .TWO.                 +2L
-.MINUS1.    	      B11111111111111111111111111111111111L
-.PAT1.                B01010101010101010101010101010101010L
-.PAT2.                B10101010101010101010101010101010101L
+.MINUS1.    	      B1111111111111111111111111111111111L
+.PAT1.                B0101010101010101010101010101010101L
+.PAT2.                B1010101010101010101010101010101010L
 .SPARE.               &0
 

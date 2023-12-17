@@ -5,15 +5,15 @@
 .LOOP.
 ; PAT1 * PAT2 = PAT3
 
-       	        T .SPARE. D
+       	T .SPARE. D
 		H .PAT1. D
 		V .PAT2. D
 		L 0 F		; shift left 13 places
 		L 0 F		; shift left 26 places
 		L 128 F		; shift left 35 places
 		S .PAT3. D
-		E ;+2 F
-		Z1F		; < 0: fail
+		E #+2 F
+		Z1F			; < 0: fail
 		S .ONE. D
 		G .LOOP. F	; = 0: pass
 		Z2F
@@ -22,8 +22,8 @@
 ; data - align on even address
 @
 .PAT1.		B11111111111111111110110011001100110L
-.PAT2.          B00000000000000000000000000000000010L
-.PAT3.          B11111111111111111011001100110011000L
+.PAT2.      B00000000000000000000000000000000010L
+.PAT3.      B11111111111111111011001100110011000L
 .ONE.		+1L
 .SPARE.		+0L
 

@@ -6,27 +6,27 @@
 ; shift PAT1 left 1 place = PAT2
 			T .SPARE. D
 			A .PAT1. D
-			L 0 D		; shift left 1 place
+			L 0 D		    ; shift left 1 place
 			S .PAT2. D
 			G .ERR1. F      ; < 0: fail
 			S .ONE. D
-			G ;+2 F		; = 0: pass   
+			G #+2 F		    ; = 0: pass
 
 .ERR1.			Z1F
 
 ; shift PAT2 left 1 place = PAT3
-  	     	    	T .SPARE. D
+  	     	T .SPARE. D
 			A .PAT2. D
 			L 0 D
 			S .PAT3. D
-			G .ERR2. F	; >= 0: fail
+			G .ERR2. F	    ; >= 0: fail
 			S .ONE. D
-			G .LOOP. F	; = 0: pass
+			G .LOOP. F	    ; = 0: pass
 
 .ERR2.			Z2F
 
 
-			
+
 
 ; data - align on even address
 @

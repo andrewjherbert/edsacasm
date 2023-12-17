@@ -1,43 +1,43 @@
 
 ; FUNCTION TEST - JUMPS
 
-.START.			Z0F
+.START.      Z0F
 
-.LOOP.                  T .SPARE.D		; Clear Acc
+.LOOP.       T .SPARE.D     ; Clear Acc
 
 ;  01: jump if positive on 0
 
-			E ;+2 F			; 0 >= 0?
-			Z1F			; fail
+            E #+2 F         ; 0 >= 0?
+            Z1F             ; fail
 
 ; 02: jump if postive on MAXPOS
 
-			A .MAXPOS. D
-			E ;+2 F			; MAXPOS >= 0?
-			Z2F			; fail
+            A .MAXPOS. D
+            E #+2 F         ; MAXPOS >= 0?
+            Z2F             ; fail
 
 ; 03: jump if positive on MAXNEG, jump if negative on MAXNEG
 
-			T .SPARE. D		; clear Acc
-			A .MAXNEG. D
-			E ;+2 F			; MAXNEG >= 0?
-			G ;+2 F 		; MAXNEG < 0
-			Z3F 			; fail
+            T .SPARE. D     ; clear Acc
+            A .MAXNEG. D
+            E #+2 F         ; MAXNEG >= 0?
+            G #+2 F         ; MAXNEG < 0
+            Z3F             ; fail
 
 ; 04: jump if negative on 0
-			T .SPARE. D		; clear Acc
-			G ;+2 F         	; 0 < 0?
-			E ;+2 F
-			Z4F
+            T .SPARE. D     ; clear Acc
+            G #+2 F         ; 0 < 0?
+            E #+2 F
+            Z4F
 
 ; 05: jump if negative on MAXPOS
-			A .MAXPOS. D
-			G ;+2 F			; MAXPOS < 0
-			E ;+2 F
-			Z5F
+            A .MAXPOS. D
+            G #+2 F         ; MAXPOS < 0
+            E #+2 F
+            Z5F
 
-       		       E .LOOP. F		; go back to beginning
+            E .LOOP. F      ; go back to beginning
 @
-.MAXPOS.	B01111111111111111111111111111111111L
-.MAXNEG.	B10000000000000000000000000000000000L
-.SPARE.         B0L
+.MAXPOS.    B01111111111111111111111111111111111L
+.MAXNEG.    B10000000000000000000000000000000000L
+.SPARE.     B0L

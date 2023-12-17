@@ -5,22 +5,22 @@
 .LOOP.
 ; case 0: -65536 * -65536 = -65536
 
-       	      	T .SPARE. D	; clear accumulator
-		H .MAXNEG. D	
+       	T .SPARE. D	; clear accumulator
+		H .MAXNEG. D
 		V .MAXNEG. D
-		G ;+2 F		
-		Z1F             ; >= 0: fail
+		G #+2 F
+		Z1F         ; >= 0: fail
 		S .MAXNEG. D
-		E ;+2 F		; = 0: pass
-		
+		E #+2 F		; = 0: pass
+
 ; case 1 PAT1 * PAT1 = PAT2
 
-       	      	T .SPARE. D	; clear accumulator
+       	T .SPARE. D	; clear accumulator
 		A .PAT2. D
-		H .PAT1. D	
+		H .PAT1. D
 		N .PAT1. D
-		E ;+2 F
-		Z2F		; < 0: fail
+		E #+2 F
+		Z2F		    ; < 0: fail
 		S .ONE. D
 		G .LOOP. F	; = 0: pass
 		Z3F
