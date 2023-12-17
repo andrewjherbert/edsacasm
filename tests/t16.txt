@@ -1,0 +1,20 @@
+; Test 16 -- Jump negative test test
+.Test16.   	T .DUMMY. D     ; clear Acc
+			G .ERR1. F      ; jump if negative (but Acc = +0)
+		   	A .PONE. D		; add +1
+		   	G .ERR2. F		; jump if negative (but Acc = +1)
+		   	E .Test16. F
+
+.ERR1.		T .DUMMY. D
+			A .PONE. D
+			Z1F
+
+.ERR2.		T .DUMMY. D
+			A .PONE. D
+			A .PONE. D
+			Z2F
+
+; data align on even word boundary
+@
+.DUMMY.		+0L				; temporary store
+.PONE.		+1L

@@ -1,0 +1,11 @@
+; Test 9 -- Store writing check -- should write 0 to .STORE.
+.Test09.	T .DUMMY. D		; clear Acc
+			U .STORE. D		; write to STORE -- should store 0
+			Z F				; halt
+
+; data align on even word boundary
+@
+.DUMMY.		+0L				; temporary store
+.PAT1.      B10101010101010101010101010101010101L
+.STORE.     B11111111111111111111111111111111111L  ; placed here to be easy to find using PAT1 and PAT2
+.PAT2.      B01010101010101010101010101010101010L

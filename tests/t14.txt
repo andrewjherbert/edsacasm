@@ -1,0 +1,11 @@
+; Test 14 -- Jump positive test -- should loop for ever
+.Test14.   	T .DUMMY. D     ; clear Acc
+			A .PONE.	D   ; load +1
+			E #+0 D			; loop if >= 0
+		   	Z F				; fail
+
+
+; data align on even word boundary
+@
+.DUMMY.		+0L				; temporary store
+.PONE.		+1L

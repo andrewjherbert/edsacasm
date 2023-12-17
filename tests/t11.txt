@@ -1,0 +1,13 @@
+; Test 11 -- Store writing check -- should write top bit in .STORE.
+.Test11.   	T .DUMMY. D     ; clear Acc
+			A .M2UP34. D	; load top bit
+			U .STORE. D		; store -- should store top bit
+			Z F
+
+; data align on even word boundary
+@
+.DUMMY.		+0L				; temporary store
+.M2UP34. 	B10000000000000000000000000000000000L ; -2^34
+.PAT1.      B10101010101010101010101010101010101L
+.STORE.     B11111111111111111111111111111111111L  ; placed here to be easy to find using PAT1 and PAT2
+.PAT2.      B10101010101010101010101010101010101L

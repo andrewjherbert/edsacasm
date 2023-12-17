@@ -1,0 +1,20 @@
+; FUNCTION TEST -  Simple Store Test
+
+.START.     T .COUNT. F             ; clear Acc
+.LOOP.      U .COUNT. F             ; and store 0 in COUNT
+
+            A .COUNT. F             ; read count
+            Z 0 F                   ; stop
+
+            A .ONE. F               ; increment count
+            G .LOOP. F
+            E .LOOP. F
+
+; data - align on odd address
+@
+.DUMMY.               -1
+.ONE.                 +1
+.COUNT.               +0
+
+
+

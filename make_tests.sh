@@ -1,5 +1,10 @@
-#!bin/sh
+#!/bin/sh
 set -x
+edsacasm tests/t00.txt >tests/t00.dat
+edsacasm tests/storetest1.txt >tests/storetest1.dat
+edsacasm tests/storetest2.txt >tests/storetest2.dat
+edsacasm tests/storetest3.txt >tests/storetest3.dat
+edsacasm tests/storetest4.txt >tests/storetest4.dat
 edsacasm tests/nigel2.txt >tests/nigel2.dat
 edsacasm tests/nigel3.txt >tests/nigel3.dat
 edsacasm tests/nigel7.txt >tests/nigel7.dat

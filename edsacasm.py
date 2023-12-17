@@ -1,7 +1,7 @@
-# EDSAC Test Program Assembler - Andrew Herbert -15 February 2022
+# EDSAC Test Program Assembler - Andrew Herbert - 17 December 2023
 
 # Generates binary images for loading into the bottom EDSAC store tank
-# (locations 0-63) using Tom Toth's SSI unit.
+# (locations 0-32) using Tom Toth's SSI unit.
 
 
 # Usage: edsacasm.py infile|- [-h] [-list] [-o/--out=output-file] [-t/-tanks=nnn]
@@ -18,12 +18,13 @@
 # <word> = <number> | <order>
 # <number> = +<digits> | -<digits> | &<digits> | B<binary digits> | <number>L
 # <order> = <function letter> [<address>] F | <function letter> <address> D
-# <address> = <integer> | <label>
+# <address> = <integer> | <label> | #+<digits> | #-<digits>
 # <comment> = ; text terminated by newline
 
 # @ forces next word to be aligned to even address
+# # introduces a relative address to current location
 
-# Numbers and orders are stored as short numbers (17 bits) ubless followed by L in 
+# Numbers and orders are stored as short numbers (17 bits) unless followed by L in
 # which case they are assembled as 35 bit long numbers in the next two succeeding
 # locations.  The @ symbol should be used before the label to foce alignment on a
 # even address.
@@ -97,8 +98,8 @@ def assembler():
 def assemble(f, i, p): # assemble next line if any
     global cpa
     #print("***Assemble", i, p)
-    if cpa > 31:
-        syntaxError(f, "program extends beyond tank 0")
+    if cpa > len(store):
+        syntaxError(f, "program extends beyond end of store")
     while i < len(f):
         i = skipSpace(f, i)
         if f[i] == '\n':
@@ -107,8 +108,10 @@ def assemble(f, i, p): # assemble next line if any
             i = comment(f, i+1)
         elif f[i] == '@':
             i = align(f, i, p)
+        elif f[i] == '.':
+            i = labelDef(f, i, p)
         else:
-            i = labelledWord (f, i, p)
+            i = word(f, i, p)
 
 # ---- comment ---- #
 
@@ -126,33 +129,8 @@ def align(f, i, p): # align on even word
     if (cpa&1) == 1:
         cpa +=1
     i += 1
-    if i < len(f):
-        i = labelledWord(f, i, p)
     return i
 
-# ---- labels ---- #
-
-def labelledWord(f, i, p):
-    #print("***labelledWord", i, p)
-    # look for labels
-    i = skipSpace(f, i)
-    while f[i] == '.':
-        i = labelDef(f, i+1, p)
-        i = skipSpace(f, i)
-        # look for word
-    if f[i] == '+' or f[i] == '-':
-        return number(f, i)
-    elif f[i] == '&':
-        return octal(f, i)
-    elif f[i] == 'B':
-        return binary(f, i)
-    elif f[i].isalpha():
-        return order(f, i, p)
-    elif f[i] == '\n':
-        return newline(f, i)
-    else:
-        syntaxError(f, "Unexpected symbol '{}' ({})".format(f[i], ord(f[i])))
-    
 # ---- labelDef ---- #
 
 def labelDef(f, i, p): # assemble label definition
@@ -174,9 +152,26 @@ def label(f, i, p): # assemble label
             syntaxError(f, "malformed label")
         else:
              j += 1
-    name = f[i:j]
+    name = f[i+1:j]
     #print("Name:", name)
     return (j+1, name)
+
+# ---- words ---- #
+
+def word(f, i, p):
+    #print("***word", i, p)
+    if f[i] == '+' or f[i] == '-':
+        return number(f, i)
+    elif f[i] == '&':
+        return octal(f, i)
+    elif f[i] == 'B':
+        return binary(f, i)
+    elif f[i].isalpha():
+        return order(f, i, p)
+    elif f[i] == '\n':
+        return newline(f, i)
+    else:
+        syntaxError(f, "Unexpected symbol '{}' ({})".format(f[i], ord(f[i])))
 
  # ---- number ---- #
 
@@ -187,9 +182,16 @@ def number(f, i):
     j = i+1
     while f[j].isdigit():
         j += 1
-    value = int(f[i:j]) 
-    #print("***Result =", value)
-    return storeNumber (f, j, value)
+    value = int(f[i+1:j])
+    if f[i] == '-':
+        if value > 2**34:
+            syntaxError(f, "negative number out of range")
+        else:
+            return storeNumber(f, j, -value)
+    elif value >= 2**34:
+        syntaxError(f, "positive number out of range")
+    else:
+        return storeNumber(f, j, value)
 
 # ---- octal ---- #
 
@@ -212,6 +214,8 @@ def octal(f, i):
         i += 1 # move to next digit
     if digits == 0:
         syntaxError(f, "no digits found after &")
+    elif value >= 2**35:
+        syntaxError(f, "octal number out of range")
     return storeNumber(f, i, value)
 
 # ----binary ---- #
@@ -233,6 +237,8 @@ def binary(f, i):
             value = (value << 1) + 1
         elif digits == 0:
             syntaxError(f, "no digits found after B")
+        elif value >= 2**35:
+            syntaxError(f, "binary number out of range")
         else:
             return storeNumber(f, i, value)
 
@@ -240,11 +246,8 @@ def binary(f, i):
 
 def storeNumber (f, i, value):
     global cpa, store
-    double = True if f[i] == 'L' else False
-    if double:
+    if f[i] == 'L':
         i += 1
-        if value > 2**35-1 or value < -2**35:
-            syntaxError(f, "long number out of range")
         if cpa % 2 == 1:
             syntaxError(f, "Long number not aligned on an odd address")
         if ( (cpa+1) >= len(store)):
@@ -252,12 +255,12 @@ def storeNumber (f, i, value):
         value = (value & 0o377777777777) << 1
         #print(format(value, "036b"))
         store[cpa]   = value &0o777777
-        store[cpa+1] = value >> 18 
+        store[cpa+1] = value >> 18
         #print(format(store[cpa], "018b"), format(store[cpa+1], "018b"), "\n\n")
         cpa += 2
-    else: # short 
-        if value > 2**17-1 or value < -2**17:
-            syntaxError(f, "short number out of range")
+    else: # short
+        if value > 2**17:
+            syntaxError(f, "value too large for long number")
         if cpa >= len(store):
             syntaxError(f, "Store full")
         value = (value & 0o377777) << 1
@@ -271,11 +274,9 @@ def order(f, i, p):
     global cpa, store, functions
     #print("***Order", i, '"', f[i], '"')
     order = functionCodes.find(f[i])
-    if cpa >= len(store):
-        syntaxError(f, "Store full")
-    store[cpa] = order << 12
     if order == -1:
         syntaxError(f, "function code expected")
+    store[cpa] = order << 12
     i = address(f, i+1, p)
     i = skipSpace(f, i)
     if f[i] == 'F':
@@ -293,7 +294,7 @@ def order(f, i, p):
 
 def address(f, i, p):
     global cpa, store, symbols
-    #print("Address", i, '"', f[i], '"')
+    #print("Address", i)
     i = skipSpace(f, i)
     if f[i].isdigit():
         j = i+1
@@ -306,7 +307,7 @@ def address(f, i, p):
         #print("***Result =", addr)
         return j
     elif f[i] == '.':
-        j, name = label(f, i+1, p)
+        j, name = label(f, i, p)
         #print("***Result =", name, p)
         if p == 2:
             if name in symbols:
@@ -315,7 +316,7 @@ def address(f, i, p):
             else:
                 syntaxError(f, "undefined label - " + name)
         return j
-    elif f[i] == ';':
+    elif f[i] == '#':
         return relative(f, i+1, p)
     else:
         #print("***Result =", 0)
@@ -328,13 +329,13 @@ def relative(f, i, p):
     sign = f[i]
     value = 0
     if not (sign == '+' or  sign == '-'):
-        syntaxError(f, "expected + or - after ;")
+        syntaxError(f, "expected + or - after #")
     i += 1
     if not f[i].isdigit:
         syntaxError(f, "number missing from relative address")
     while f[i].isdigit():
-    	value = value * 10 + ord(f[i]) - ord('0')
-    	i += 1
+        value = value * 10 + ord(f[i]) - ord('0')
+        i += 1
     addr = cpa + value * (+1 if sign == '+' else -1)
     if addr < 0 or addr > len(store):
         syntaxError(f, "relative address out of range 0", '-', len(store))

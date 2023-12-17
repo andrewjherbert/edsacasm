@@ -1,0 +1,8 @@
+; Test 0 -- check T order clears Acc -- should finish with 0 in Acc
+
+.Test00.	T .DUMMY. D		; clear Acc
+			Z F				; halt
+
+; data align on even word boundary
+@
+.DUMMY.		+0L				; temporary store

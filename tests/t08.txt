@@ -1,0 +1,11 @@
+; Test 8 -- Arithmetic check 2^34+1=-1 -- should finish with all but top bit set
+.Test08.	T .DUMMY. D	   	; clear Acc
+			A .P2UP34M1. D  ; load 65535
+			A .PONE. D		; add + 1
+			Z F				; halt
+
+; data align on even word boundary
+@
+.DUMMY.		+0L				; temporary store
+.PONE.		+1L
+.P2UP34M1.  +17179869183L	; 2^34-1

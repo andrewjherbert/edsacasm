@@ -1,0 +1,9 @@
+; Test 5 -- Arithmetic check 0 + 0 = 0 -- should finish with 0 in Acc
+.Test05.	T .DUMMY. D		; clear Acc
+			A .ZERO. D		; 0+0=0
+			Z F				; halt
+
+; data align on even word boundary
+@
+.DUMMY.		+0L				; temporary store
+.ZERO.      +0L

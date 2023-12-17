@@ -1,0 +1,12 @@
+; Test 12 -- Store writing check
+.Test12.   	T .DUMMY. D     ; clear Acc
+		   	A .PAT1. D		; load PAT1
+		   	U .STORE. D		; store -- should store PAT1
+		   	Z F
+
+; data align on even word boundary
+@
+.DUMMY.		+0L				; temporary store
+.PAT1.      B10101010101010101010101010101010101L
+.STORE.     B11111111111111111111111111111111111L  ; placed here to be easy to find using PAT1 and PAT2
+.PAT2.      B10101010101010101010101010101010101L

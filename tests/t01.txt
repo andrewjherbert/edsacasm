@@ -1,0 +1,9 @@
+; Test 1 -- check Acc ls digit -- should finish with +1 in Acc
+.Test01.	T .DUMMY. D		; clear Acc
+			A .PONE. D		; add +1 (0+1=1)
+			Z F				; halt
+
+; data align on even word boundary
+@
+.DUMMY.		+0L				; temporary store
+.PONE.		+1L
