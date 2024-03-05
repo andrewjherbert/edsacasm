@@ -31,7 +31,5 @@ edsacasm tests/function-tests.txt >tests/function-tests.dat -t=32
 edsacasm tests/storetest.txt >tests/storetest.dat -t=32
 edsacasm tests/hloop.txt >tests/hloop.dat
 edsacasm tests/ztest.txt >tests/ztest.dat
-
-
-
-
+edsacasm tests/tsubroutine.txt >tests/tsubroutine.dat
+edsacasm tests/temp.txt >tests/temp.dat

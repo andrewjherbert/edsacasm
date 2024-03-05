@@ -1,0 +1,13 @@
+; simple test
+	T .WORK. D
+	Z F
+
+
+
+@
+		-1L
+.ONE. 	+1L
+		-1L
+.WORK.	+0L
+		-1L
+

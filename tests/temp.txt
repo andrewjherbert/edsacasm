@@ -1,0 +1,27 @@
+; GENERIC TEST
+
+.START.
+; test E order on +ve
+ 	    T 20 D			    ; clear Acc
+ 	    A .MINUS1. D
+;		E .F1. F             ;
+		G .START. F
+.F1.	Z 1 F				; E: branch not taken on zero
+
+; data - align on even address
+@
+.ZERO.      +0L
+.ONE.       +1L
+.MINUS1.    -1L
+.MAXPOS.    B01111111111111111111111111111111111L
+.MAXNEG.    B10000000000000000000000000000000000L
+.SPARE.     &0L
+
+; Try maxpos, maxneg
+; Consider replacing T by U
+; Consider trying F rather than D
+
+; E verified on +0, +1
+
+
+

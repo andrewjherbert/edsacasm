@@ -1,0 +1,21 @@
+; Test subroutine entry and exit
+
+.Test.      T .DUMMY. D     ; clear Acc
+
+.CALL.      A .CALL. F      ; load self
+            G .SUB. F       ; enter subroutine
+            Z 0 F           ; and stop
+
+.SUB.       A .RET. F       ; construct return jump
+            T .EXIT. F
+.EXIT.      Z 1 F           ; gets replaced by return
+            Z 2 F           ; shouldn't get here
+
+
+; short data
+.RET.       U 2 F            ; to construct return jump
+
+; long data align on even word boundary
+@
+.DUMMY.     +0L             ; temporary store
+

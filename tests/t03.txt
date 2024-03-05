@@ -1,9 +1,0 @@
-; Test 3 -- check odd Acc bits -- should finish with PAT1 in Acc
-.Test03.	T .DUMMY. D		; clear Acc
-			A .PAT1. D		; load PAT1
-			Z F
-
-; data align on even word boundary
-@
-.DUMMY.		+0L				; temporary store
-.PAT1.      B1010101010101010101010101010101010L

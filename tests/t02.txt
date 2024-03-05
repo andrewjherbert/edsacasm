@@ -1,9 +1,0 @@
-; Test 2 -- check Acc ms digit -- should finish with ms bit set
-.Test02.	T .DUMMY. D   	; clear Acc
-			A .M2UP34. D		; add ms bit
-			Z F
-
-; data align on even word boundary
-@
-.DUMMY.		+0L				; temporary store
-.M2UP34.    B10000000000000000000000000000000000L ; top bit

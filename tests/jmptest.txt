@@ -10,7 +10,7 @@
             E #+2 F         ; 0 >= 0?
             Z1F             ; fail
 
-; 02: jump if postive on MAXPOS
+; 02: jump if positive on MAXPOS
 
             A .MAXPOS. D
             E #+2 F         ; MAXPOS >= 0?

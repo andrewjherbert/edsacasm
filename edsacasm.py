@@ -373,6 +373,7 @@ def syntaxError(f, reason):
 
 def dumpStore(f, list):
     #print("***Listing store")
+    f.write("\n")
     global cpa, store
     for i in range(len(store)):
         if list:
