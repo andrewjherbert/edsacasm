@@ -1,23 +1,23 @@
 ; FUNCTION TEST -  Addition part 3
 
-.START.                Z0F
+.START.
 
-.LOOP.
 ; add PAT2 + PAT2 + PAT2  = -1
-      	       	       T .SPARE. D
-		       A .PAT2. D
-		       A .PAT2. D
-		       A .PAT2. D
-		       E .ERR1. F		; P2+P2+P2 >= 0 -- wrong
-		       A .ONE. D
-		       G .ERR1. F               ; P2+P2+P2+1 < 0 -- wrong
-		       E .LOOP. F              ; Pass
-.ERR1.		       Z1F	 		; Fail
+.LOOP.         T .SPARE. D
+               A .PAT2. D
+               A .PAT2. D
+               A .PAT2. D
+               U .SPARE. D
+               E .ERR1. F       ; P2+P2+P2 >= 0 -- wrong
+               A .ONE. D
+               G .ERR1. F       ; P2+P2+P2+1 < 0 -- wrong
+               E .LOOP. F       ; Pass
+.ERR1.         Z 1 F            ; Fail
 
 
 ; data - align on even address
 @
-.ONE.       	      +1L
+.ONE.                 +1L
 .PAT2.                B10101010101010101010101010101010101L
 .SPARE.               +0L
 

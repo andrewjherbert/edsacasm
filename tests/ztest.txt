@@ -1,35 +1,16 @@
-; program INSTRUCTION LOOP
+; Z test
 
-.START.
-.LOOP.    X0F
-          X1F
-	  	  X2F
-	  	 ; X3F
-	  	 ; X4F
-	  	 ; X5F
-	  	 ; X6F
-	  	 ; X7F
-	  	 ; X8F
-	  	 ; X9F
-	  	 ; X10F
-	  	 ; X11F
-	  	 ; X12F
-	   	 ; X13F
-	  	 ; X14F
-	   	 ; X15F
-	  	  Z0F
-	  	 ; X17F
-	     ; X18F
-	  	 ; X19F
-	  	 ; X20F
-	  	 ; X21F
-	  	 ; X22F
-	  	 ; X23F
-	  	 ; X24F
-	  	 ; X25F
-	  	 ; X26F
-	  	 ; X27F
-	  	 ; X28F
-	  	 ; X29F
-	   	  E .LOOP. F
-	   	  G .LOOP. F
+.START.		T .SPARE. D		; clear Acc
+       		Z 0 F			; halt - restart with Single EP or RESUME
+       		A .ONE. D
+       		Z 1 F			; halt - restart with Single EP or RESUME
+       		A .ONE. D
+       		Z 2 F			; halt - restart with  RESUME
+.L0.   		E .L0. F		; should now dynamic stop
+.L1.   		G .L1. F
+
+@
+.ONE.		+1L
+.SPARE.		+0L
+            +3L
+

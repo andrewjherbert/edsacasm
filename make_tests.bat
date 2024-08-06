@@ -1,5 +1,4 @@
-#!/bin/sh
-set -x
+:: Assemble test files
 python3 edsacasm.py tests/nigel2.txt >tests/nigel2.dat
 python3 edsacasm.py tests/nigel3.txt >tests/nigel3.dat
 python3 edsacasm.py tests/nigel7.txt >tests/nigel7.dat

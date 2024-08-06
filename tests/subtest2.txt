@@ -1,19 +1,19 @@
 ; FUNCTION TEST - Subtraction part 2
 
-.START.                Z0F
+.START.
 
-.LOOP.
 ; subtract 0 - 1 = -1
-      	       	       T .SPARE. D
-		       S .ONE. D
-		       E .ERR1. F		; 0 - 1 >= 0 -- Fail
-		       A .ONE. D
-		       E .LOOP. F		; 0 - 1 + 1 >= 0 -- Pass
-.ERR1.                 Z1F
+.LOOP.         T .SPARE. D
+               S .ONE. D
+               U .SPARE. D
+               E .ERR1. F       ; 0 - 1 >= 0 -- Fail
+               A .ONE. D
+               E .LOOP. F       ; 0 - 1 + 1 >= 0 -- Pass
+.ERR1.         Z 1 F
 
 
 ; data - align on even address
 @
-.ONE.       	      +1L
+.ONE.                 +1L
 .SPARE.               +0L
 

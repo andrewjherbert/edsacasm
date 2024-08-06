@@ -1,13 +1,14 @@
 ; FUNCTION TEST -  Addition part 1
 
 .START.
+
 ; add 0 + 0 = 0
-            T .SPARE. D
+.LOOP1.     T .SPARE. D
             A .ZERO. D      ; 0 + 0
             G .F2. F        ; 0 + 0 < 0 -- wrong
             A .MINUS1. D    ; 0 + 0 - 1
             E .F3. F        ; 0 + 0 - 1 >= 0 -- wrong
-            G .NEXT. F      ; Pass
+            G .LOOP1. F     ; Pass
 .F1.        Z1F             ; Fail
 .F2.        Z2F             ; Fail
 .F3.        Z3F             ; Fail
@@ -16,10 +17,11 @@
 .NEXT.      T .SPARE. D
             A .MINUS1. D
             A .ONE. D
+            U .SPARE. D
             G .F5. F        ; -1+1 < 0
             A .MINUS1. D
             E .F6. F        ; -1+1-1 >= 0 -- wrong
-            G .START. F     ; Pass - loop back and repeat
+            G .LOOP1. F     ; Pass - loop back and repeat
 .F4.        Z4F             ; Fail
 .F5.        Z5F             ; Fail
 .F6.        Z6F             ; Fail
@@ -31,5 +33,6 @@
 .ONE.                 +1L
 .MINUS1.              -1L
 .SPARE.               &0L
+
 
 

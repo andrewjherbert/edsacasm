@@ -1,13 +1,13 @@
 ; FUNCTION TEST - Transfer Unit / Short numbers
 
-.START.         Z0F
+.START.
 
-.LOOP.
 ; case 0: PAT1 + PAT2 = -1
 
-       	T .SPARE. F
+.LOOP. 	T .SPARE. F
 		A .PAT1. F
 		A .PAT2. F
+		U .SPARE. F
 		G #+2 F
 		Z1F			; >= 0: fail
 		A .ONE. F
@@ -19,6 +19,7 @@
        	T .SPARE. F
 	    H .PAT1. F
 	    V .PAT2. F
+	    U .SPARE. F
 	    G #+2 F
 	    Z3F
 	    S .PAT3. D

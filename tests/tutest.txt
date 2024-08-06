@@ -1,6 +1,6 @@
 ; FUNCTION TEST - T and U orders
 
-.START. Z0F
+.START.
 
 .LOOP.
        	T .SPARE. D
@@ -8,7 +8,7 @@
 		T .SPARE. D
 		E #+2 F		; < 0: fail
 		Z1F
-		S .ONE. D
+		A .MINUS1. D
 		G #+2 F		; = 0: pass
 		Z2F
 		A .ONE. D
@@ -24,7 +24,7 @@
 		E #+2 F		; < 0: fail
 		Z5F
 		S .ONE. F
-		G .START. F	; = 0: pass
+		G .LOOP. F	; = 0: pass
 		Z6F
 
 @

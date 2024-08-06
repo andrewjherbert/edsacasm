@@ -8,219 +8,213 @@
 
 .JMPTESTS.      T .SPARE.D      ; Clear Acc
 
-;  jump if positive on 0
+;  E 0 (jump)
+.T01.           E .T02. F
+.ERR1.          Z1F
 
-                E #+2 F         ; 0 >= 0?
-.ERR1.          Z1F             ; fail
+; E MAXPOS (jump)
+.T02.           A .MAXPOS. D
+                E .T03. F
+.ERR2.          Z2F
 
-; jump if postive on MAXPOS
-
-                A .MAXPOS. D
-                E #+2 F         ; MAXPOS >= 0?
-.ERR2.          Z2F             ; fail
-
-; jump if positive on MAXNEG, jump if negative on MAXNEG
-
-                T .SPARE. D     ; clear Acc
+; E MAXNEG (no jump)
+.T03.           T .SPARE. D     ; clear Acc
                 A .MAXNEG. D
-                E .ERR3. F      ; MAXNEG >= 0?
-                G #+2 F         ; MAXNEG < 0
-.ERR3.          Z3F             ; fail
-
-; jump if negative on 0
-                T .SPARE. D     ; clear Acc
-                G .ERR4. F      ; 0 < 0?
-                E #+2 F
+                E .ERR3. F
+; G MAXNEG (jump)
+.T05.           G .T06. F
 .ERR4.          Z4F
 
-; jump if negative on MAXPOS
-                A .MAXPOS. D
-                G .ERR5. F      ; MAXPOS < 0
-                E #+2 F
-.ERR5.          Z5F
+; G 0 (no jump)
+.T06.           T .SPARE. D     ; clear Acc
+                G .ERR5. F
+
+; G MAXPOS (no jump)
+.T07.           A .MAXPOS. D
+                G .ERR6. F
+                E .T08. F
 
 ; FUNCTION TEST -  ADDITION
 
 .ADDTESTS.
 
 ; add 0 + 0
-                T .SPARE. D
+.T08.           T .SPARE. D
                 A .ZERO. D      ; 0 + 0
-                G #+4 F         ; 0 + 0 < 0 -- wrong
+                G .ERR7. F      ; 0 + 0 < 0 -- wrong
                 A .MINUS1. D    ; 0 + 0 - 1
-                E .ERR6. F      ; 0 + 0 - 1 >= 0 -- wrong
-                G #+2 F         ; Pass
-.ERR6.          Z6F             ; Fail
+                E .ERR8. F      ; 0 + 0 - 1 >= 0 -- wrong
+                G .T09. F
+
 
 ; add -1 + 1 = 0
-                T .SPARE. D
+.T09.           T .SPARE. D
                 A .MINUS1. D
                 A .ONE. D
-                G .ERR7. F      ; -1+1 < 0
+                G .ERR9. F      ; -1+1 < 0
                 A .MINUS1. D
-                E .ERR7. F      ; -1+1-1 >= 0 -- wrong
-                G #+2 F         ; Pass
-.ERR7.          Z7F             ; Fail
+                E .ERR10. F     ; -1+1-1 >= 0 -- wrong
+                G .T10. F
+.ERR11.         Z11F
 
 ; add PAT1+ PAT2 = -1
-                        T .SPARE. D
+.T10.           T .SPARE. D
                 A .PAT1. D
                 A .PAT2. D
-                E .ERR8. F      ; P1+P2 >= 0 -- wrong
+                E .ERR12. F     ; P1+P2 >= 0 -- wrong
                 A .ONE. D
-                G .ERR8. F      ; P1+P2+1 < 0 -- wrong
-                E #+2 F         ; Pass
-.ERR8.          Z8F             ; Fail
+                G .ERR13. F     ; P1+P2+1 < 0 -- wrong
+                E .T11. F
+.ERR14.
 
 ; add PAT1 + PAT1 + PAT1 = -2
-                T .SPARE. D
+.T11.           T .SPARE. D
                 A .PAT1. D
                 A .PAT1. D
                 A .PAT1. D
-                E .ERR9. F      ; P1+P1+P1 >= 0 -- wrong
+                E .ERR15. F     ; P1+P1+P1 >= 0 -- wrong
                 A .TWO. D       ; P1+P1+P1+2 < 0 -- wrong
-                G .ERR9. F
-                E #+2 F
-.ERR9.          Z9F
+                G .ERR16. F
+                E .T12. F
+.ERR17.         Z17F
 
 ; add PAT2 + PAT2 + PAT2  = -1
-                T .SPARE. D
+.T12.          T .SPARE. D
                 A .PAT2. D
                 A .PAT2. D
                 A .PAT2. D
-                E .ERR10. F     ; P2+P2+P2 >= 0 -- wrong
+                E .ERR18. F     ; P2+P2+P2 >= 0 -- wrong
                 A .ONE. D
-                G .ERR10. F     ; P2+P2+P2+1 < 0 -- wrong
-                E #+2 F         ; Pass
-.ERR10.         Z10F            ; Fail;
+                G .ERR19. F     ; P2+P2+P2+1 < 0 -- wrong
+                E .T13. F
+.ERR20.         Z20F
 
 ; FUNCTION TEST - SUBTRACTION
 
 .SUBTRACTTESTS.
 
 ; subtract 0 - 0 = 0
-                T .SPARE. D
+.T13.           T .SPARE. D
                 S .ZERO. D
-                G .ERR11. F     ; 0 - 0 < 0 -- Fail
+                G .ERR21. F     ; 0 - 0 < 0 -- Fail
                 S .ONE. D
-                G #+2 F         ; 0 - 0 - = 0 -- Pass
-.ERR11.         Z11F            ; Fail
+                G .T14. F       ; 0 - 0 - = 0 -- Pass
+.ERR22.         Z22F
 
 ; subtract 1 - 1 = 0
-                T .SPARE. D
+.T14.           T .SPARE. D
                 A .ONE. D
                 S .ONE. D
-                G .ERR12. F     ; 1 - 1 < 0 -- Fail
+                G .ERR23. F     ; 1 - 1 < 0 -- Fail
                 S .ONE. D
-                G #+2 F         ; 1 - 1 = 0 -- Pass
-.ERR12.         Z12F            ; Fail
+                G .T15. F       ; 1 - 1 = 0 -- Pass
+.ERR24.         Z24F
 
 ;subtract  -1 - 0 = -1
-                T .SPARE. D
+.T15.           T .SPARE. D
                 A .MINUS1. D
                 S .ZERO. D
-                E .ERR13. F     ; -1 - 0 >= 0 -- wrong
+                E .ERR25. F     ; -1 - 0 >= 0 -- wrong
                 A .ONE. D
-                E #+2 F         ; -1 - 0 + 1 >= 0 -- Pass
- .ERR13.        Z13F
+                E .T16. F       ; -1 - 0 + 1 >= 0 -- Pass
+ .ERR26.        Z26F
 
 ; subtract 0 - 1 = -1
-                T .SPARE. D
+.T16.           T .SPARE. D
                 S .ONE. D
-                E .ERR14. F     ; 0 - 1 >= 0 -- Fail
+                E .ERR27. F     ; 0 - 1 >= 0 -- Fail
                 A .ONE. D
-                E #+2 F         ; 0 - 1 + 1 >= 0 -- Pass
- .ERR14.        Z14F
+                E .T17. F       ; 0 - 1 + 1 >= 0 -- Pass
+ .ERR28.        Z28F
 
 ; FUNCTION TEST - COLLATION
 
 .COLLATETESTS.
 
 ; collate 0 & -1 = 0
-                       T .SPARE. D
+.T17.           T .SPARE. D
                 H .ZERO. D
                 C .MINUS1. D
-                G .ERR15. F     ; 0 & -1 < 0 -- wrong
+                G .ERR29. F     ; 0 & -1 < 0 -- wrong
                 S .ONE. D
-                G #+2 F         ; (0 & -1) = 0 -- Pass
- .ERR15.               Z15F
+                G .T18. F       ; (0 & -1) = 0 -- Pass
+ .ERR30.        Z30F
 
 ; collate -1 & 0 = 0
-                T .SPARE. D
+.T18.           T .SPARE. D
                 H .MINUS1. D
                 C .ZERO. D
-                G .ERR16. F     ; -1 & 0 < 0 -- wrong
+                G .ERR31. F     ; -1 & 0 < 0 -- wrong
                 S .ONE. D
-                G #+2 F         ; (--1 & 0) >= 0 -- Pass
-.ERR16.         Z16F
+                G .T19. F       ; (--1 & 0) >= 0 -- Pass
+.ERR32.         Z32F
 
 ; collate -1 & -1 = -1
-                T .SPARE. D
+.T19.           T .SPARE. D
                 H .MINUS1. D
                 C .MINUS1. D
-                E .ERR17. F     ; -1 & -1 >= 0 -- wrong
+                E .ERR33. F     ; -1 & -1 >= 0 -- wrong
                 A .ONE. D
-                E #+2 F         ; -1 & -1 + 1 >= 0 -- Pass
- .ERR17.        Z17F
+                E .T20. F         ; -1 & -1 + 1 >= 0 -- Pass
+ .ERR34.        Z34F
 
 ; collate PAT3 & PAT4 = PAT5
-                T .SPARE. D
+.T20.           T .SPARE. D
                 H .PAT3. D
                 C .PAT4. D
                 S .PAT5. D
-                G .ERR18. F     ; p1 & p2 - p3 < 0 -- wrong
+                G .ERR35. F     ; p1 & p2 - p3 < 0 -- wrong
                 S .ZERO. D
-                E #+2 F         ; p1 & p2 -p3 -1 < 0 -- Pass
-.ERR18.         Z18F
+                E .T21. F       ; p1 & p2 -p3 -1 < 0 -- Pass
+.ERR36.         Z36F
 
 ; FUNCTION TEST -  SHIFT
 
 .SHIFTTESTS.
 
 ; shift PAT6 left 1 place = PAT7
-                T .SPARE. D
+.T21.           T .SPARE. D
                 A .PAT6. D
                 L 0 D           ; shift left 1 place
                 S .PAT7. D
-                G .ERR19. F     ; < 0: fail
+                G .ERR37. F     ; < 0: fail
                 S .ONE. D
-                G #+2 F         ; = 0: pass
-.ERR19.         Z19F
+                G .T22. F       ; = 0: pass
+.ERR38.         Z38F
 
 ; shift PAT7 left 1 place = PAT8
-                T .SPARE. D
+.T22.           T .SPARE. D
                 A .PAT7. D
                 L 0 D
                 S .PAT8. D
-                G .ERR20. F     ; >= 0: fail
+                G .ERR39. F     ; >= 0: fail
                 S .ONE. D
-                G #+2 F         ; = 0: pass
-.ERR20.         Z20F
+                G .T23. F       ; = 0: pass
+.ERR40.         Z40F
 
 
 ; shift PAT9 right 1 place = PAT10
-                T .SPARE. D
+.T23.           T .SPARE. D
                 A .PAT9. D
                 R 0 D           ; shift right 1 place
                 S .PAT10. D
-                G .ERR21. F     ; < 0: fail
+                G .ERR41. F     ; < 0: fail
                 S .ONE. D
-                G #+2 F         ; = 0: pass
-.ERR21.         Z21F
+                G .T24. F       ; = 0: pass
+.ERR42.         Z42F
 
 ; shift PAT11 right 1 place = PAT12
-
-                T .SPARE. D
+.T24.           T .SPARE. D
                 A .PAT11. D
                 R 0 D           ; shift right 1 place
                 S .PAT12. D
-                G .ERR22. F     ; < 0: fail
+                G .ERR43. F     ; < 0: fail
                 S .ONE. D
-                G #+2 F         ; = 0: pass
-.ERR22.         Z22F
+                G .T25. F       ; = 0: pass
+.ERR44.         Z44F
 
 ; -2^34 shift right 70 places (acc = 71 bits) sends top bit to bottom
-                T .SPARE. D
+.T25.           T .SPARE. D
                 A .MAXNEG. D
                 R 0 F           ; shift right 15 places
                 R 0 F           ; shift right 30 places
@@ -228,157 +222,144 @@
                 R 0 F           ; shift right 60 places
                 R 256 F         ; shift right 70 places
                 G #+2 F
-                Z23F            ; >= 0: fail
+.ERR45.         Z45F            ; >= 0: fail
                 A .ONE. D
-                E #+2 F         ; = -1: pass
-                Z24F
+                E .T26. F       ; = -1: pass
+.ERR46.         Z46F
 
 ; shift result left 70 places store restore top bit
-                L 0 F           ; shift left 13 places
+.T26.           L 0 F           ; shift left 13 places
                 L 0 F           ; shift left 26 places
                 L 0 F           ; shift left 39 places
                 L 0 F           ; shift left 52 places
                 L 0 F           ; shift left 65 places
                 L 8 F           ; shift left 70 places
                 G #+2 F
-                Z25F            ; >= 0: fail
+.ERR47.         Z47F            ; >= 0: fail
                 S .MAXNEG. D
-                G #+3 F         ; < 0:  fail
+                G .ERR48. F     ; < 0:  fail
                 S .ONE. D
-                G #+2 F         ; = 0:  pass
-                Z26F
+                G .T27. F       ; = 0:  pass
+.ERR49.         Z49F
 
 ; FUNCTION TEST - ROUNDING
 
 .ROUNDTESTS.
 
 ; no rounding required
-
- .ROUND.        T .SPARE. D
+ .ROUND.
+ .T27.          T .SPARE. D
                 A .ZERO. D
                 Y 0 D
-                G .ERR27. F     ; < 0: fail
+                G .ERR50. F     ; < 0: fail
                 L 0 D           ; check bit 35
                 S .ONE. D
-                G .ERR27. F
-                E #+2 F         ; = 0: pass
-.ERR27.         Z27F
+                G .ERR51. F
+                E .T28. F       ; = 0: pass
+.ERR52.         Z52F
 
 ; rounding required
-
-                T .SPARE. D
+.T28.           T .SPARE. D
                 A .ONE. D
                 R 0 D           ; set bit 35
                 Y 0 D
-                G .ERR28. F     ; < 0: fail
+                G .ERR53. F     ; < 0: fail
                 S .TWO. D
-                G #+2 F
-.ERR28.         Z28F
+                G .T29. F
+.ERR54.         Z54F
 
 ; FUNCTION TEST -  MULTIPLICATION
 
 .MULTIPLYTESTS.
 
 ; case 0: 0 * 0 = 0
-
-                T .SPARE. D     ; clear accumulator
+.T29.           T .SPARE. D     ; clear accumulator
                 H .ZERO. D      ; calculate 0 * 0
                 V .ZERO. D
-                G #+3 F         ; < 0: fail
+                G .ERR55. F     ; < 0: fail
                 S .ONE. D
-                G #+2 F         ; = 0: pass
-.ERR29.         Z29F
+                G .T30. F       ; = 0: pass
+.ERR56.         Z56F
 
 ;  0 * 1 = 0
-
-                T .SPARE. D     ; clear accumulator
+.T30.           T .SPARE. D     ; clear accumulator
                 H .ZERO. D      ; calculate 0 * 0
                 V .ONE. D
-                G #+3 F         ; < 0: fail
+                G .ERR57. F     ; < 0: fail
                 S .ONE. D
-                G #+2 F         ; = 0: pass
-.ERR30.         Z30F
+                G .T31. F       ; = 0: pass
+.ERR58.         Z58F
 
 ; 0 * -1 = 0
-
-                T .SPARE. D     ; clear accumulator
+.T31.           T .SPARE. D     ; clear accumulator
                 H .ZERO. D      ; calculate 0 * 0
                 V .MINUS1. D
-                G #+3 F         ; < 0: fail
+                G .ERR59. F     ; < 0: fail
                 S .ONE. D
-                G #+2    F      ; = 0: pass
-.ERR31.         Z31F
+                G .T32. F       ; = 0: pass
+.ERR60.         Z60F
 
 
 ; 1 * 1 = 1
-
-                T .SPARE. D     ; clear accumulator
+.T32.           T .SPARE. D     ; clear accumulator
                 H .ONE. D       ; calculate 1 * 1 * 1
                 V .ONE. D
-                G #+3 F         ; < 0: fail
+                G .ERR61. F     ; < 0: fail
                 S .TWO. D
-                G #+2 F         ; = 0: pass
-.ERR32.         Z32F
+                G .T33. F       ; = 0: pass
+.ERR62.         Z62F
 
 ; -1 * -1 = 1
-
-                T .SPARE. D     ; clear accumulator
+.T33.           T .SPARE. D     ; clear accumulator
                 H .MINUS1. D    ; calculate -1 * -1 = 1
                 V .MINUS1. D
-                G #+3 F         ; < 0: fail
+                G .ERR63. F     ; < 0: fail
                 S .TWO. D
-                G #+2 F         ; = 0: pass
-.ERR33.         Z33F
+                G .T34. F       ; = 0: pass
+.ERR64.         Z64F
 
 ; -1 * 1 = -1
-
-                T .SPARE. D     ; clear accumulator
-                H .MINUS1. D    ; calculate -1 * 1 = 1
+.T34.           H .MINUS1. D    ; calculate -1 * 1 = 1
                 V .ONE. D
-                E #+3 F         ; < 0: fail
+                E .ERR65. F     ; < 0: fail
                 S .TWO. D
-                G #+2 F         ; = 0: pass
-.ERR34.         Z34F
-
-
+                G .T35. F       ; = 0: pass
+.ERR66.         Z66F
 
 ;  -2^34 * -2^34 = --2^34
-
-                T .SPARE. D     ; clear accumulator
+.T35.           T .SPARE. D     ; clear accumulator
                 H .MAXNEG. D
                 V .MAXNEG. D
                 G #+2 F
-.ERR35.         Z35F            ; >= 0: fail
+.ERR67.         Z67F            ; >= 0: fail
                 S .MAXNEG. D
-                E #+2 F         ; = 0: pass
+                E .T36. F       ; = 0: pass
+.ERR68.         Z68F
 
 ; PAT13 * PAT13 = PAT14
-
-                T .SPARE. D     ; clear accumulator
+.T36.           T .SPARE. D     ; clear accumulator
                 A .PAT14. D
                 H .PAT13. D
                 N .PAT13. D
                 E #+2 F
-.ERR36.         Z36F            ; < 0: fail
+.ERR69.         Z69F            ; < 0: fail
                 S .ONE. D
-                G #+2 F         ; = 0: pass
-.ERR37.         Z37F
+                G .T37. F       ; = 0: pass
+.ERR70.         Z70F
 
 ; PAT15 * PAT16 = PAT17
-
-                T .SPARE. D
+.T37.           T .SPARE. D
                 S .PAT17. D
                 H .PAT15. D
                 V .PAT16. D
                 E #+2 F
-.ERR38.         Z38F            ; < 0: fail
+.ERR71.         Z71F            ; < 0: fail
                 S .ONE. D
-                G #+2 F         ; = 0: pass
-.ERR39.         Z39F
+                G .T38. F       ; = 0: pass
+.ERR72.         Z72F
 
-; case 0 PAT18 * PAT19 = PAT20
-
-                T .SPARE. D
+; PAT18 * PAT19 = PAT20
+.T38.           T .SPARE. D
                 H .PAT18. D
                 V .PAT19. D
                 L 0 F           ; shift left 13 places
@@ -386,10 +367,10 @@
                 L 128 F         ; shift left 35 places
                 S .PAT20. D
                 E #+2 F
-.ERR40.         Z40F            ; < 0: fail
+.ERR73.         Z73F            ; < 0: fail
                 S .ONE. D
-                G #+2 F         ; = 0: pass
-.ERR41.         Z41F
+                G .T39. F       ; = 0: pass
+.ERR74.         Z74F
 
 
 ; FUNCTION TEST - Transfer Unit / Short numbers
@@ -397,60 +378,90 @@
 .TRANSFERTESTS.
 
 ; PAT21 + PAT22 = -1
-
-                T .SPARE. F
+.T39.           T .SPARE. F
                 A .PAT21. F
                 A .PAT22. F
                 G #+2 F
-.ERR42.         Z42F            ; >= 0: fail
+.ERR75.         Z75F            ; >= 0: fail
                 A .ONE. F
-                E #+2 F         ; = -1: pass
-.ERR43.         Z43F
+                E .T40. F       ; = -1: pass
+.ERR76.         Z76F
 
 ; PAT21 * PAT22 = PAT23
-
-                T .SPARE. F
+.T40.           T .SPARE. F
                 H .PAT21. F
                 V .PAT22. F
                 G #+2 F
-.ERR44.         Z44F
+.ERR78.         Z78F
                 S .PAT23. D
-                E #+2 F
-.ERR45.         Z45F
+                E .T41. F
+.ERR79.         Z79F
 
 ; FUNCTION TEST - T and U orders
 
 .TUTESTS.
-
-                T .SPARE. D
+.T41.           T .SPARE. D
                 A .MINUS1. D
                 T .SPARE. D
                 E #+2 F         ; < 0: fail
-.ERR46.         Z46F
+.ERR80.         Z80F
                 S .ONE. D
                 G #+2 F         ; = 0: pass
-.ERR47.         Z47F
+.ERR88.         Z88F
                 A .ONE. D
                 A .SPARE. D
                 G #+2 F         ; >= 0: fail
-.ERR48.         Z48F
+.ERR89.         Z89F
                 A .ONE. D
                 E #+2 F         ; =-1: pass
-.ERR49.         Z49F
+.ERR90.         Z90F
                 A .MINUS1. D
                 U .SPARE. D
                 S .SPARE. D
                 E #+2 F         ; < 0: fail
-.ERR50.         Z50F
+.ERR91.         Z91F
                 S .ONE. F
                 G .START. F     ; = 0: pass
-.ERR51.         Z51F
+.ERR92.         Z92F
 
+.ERR3.          Z3F
+.ERR5.          Z5F
+.ERR6.          Z6F
+.ERR7.          Z7F
+.ERR8.          Z8F
+.ERR9.          Z9F
+.ERR10.         Z10F
+.ERR12.			Z12F
+.ERR13.         Z13F
+.ERR15.         Z15F
+.ERR16.         Z16F
+.ERR18.         Z18F
+.ERR19.         Z19F
+.ERR21.         Z21F
+.ERR23.         Z23F
+.ERR25.         Z25F
+.ERR27.         Z25F
+.ERR29.         Z29F
+.ERR31.			Z31F
+.ERR33.         Z32F
+.ERR35.         Z35F
+.ERR37.         Z37F
+.ERR39.         Z39F
+.ERR41.         Z41F
+.ERR43.         Z43F
+.ERR48.         Z48F
+.ERR50.         Z50F
+.ERR51.         Z51F
+.ERR53.         Z53F
+.ERR55.         Z55F
+.ERR57.         Z57F
+.ERR59.         Z59F
+.ERR61.         Z61F
+.ERR63.         Z63F
+.ERR65.         Z65F
 
 ; data - align on even address
-
 @
-
 .SPARE.           +0L
 .ZERO.            +0L
 .ONE.             +1L
