@@ -1,0 +1,16 @@
+; Test E with +0
+X 1 D X 2 D X 3 D
+.L1.    T .SPARE. D  ; clear Acc
+        A .ZERO. D
+        E .L1. F     ; should loop
+.L2.    Z F
+
+
+
+
+
+; data - align on even address
+@
+
+.SPARE.               +0L
+.ZERO.                +0L

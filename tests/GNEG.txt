@@ -1,0 +1,18 @@
+; Test G with MAXPOS also tests E MAXPOS
+
+X D X D X D
+
+.L1.    T .SPARE. D     ; clear Acc
+        A .MAXNEG. D    ; load MAXNEG
+        G .L1. F        ; should loop
+        Z F
+
+
+
+
+
+; data - align on even address
+@
+
+.SPARE.               +0L
+.MAXNEG.              B10000000000000000000000000000000000L

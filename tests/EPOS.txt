@@ -1,0 +1,17 @@
+; Test E with +ve
+
+X 1 D X 2 D X 3 D
+.L1.    T .SPARE. D     ; clear Acc
+        A .MAXPOS. D    ; load MAXPOS
+        E .L1. F        ; should loop
+        Z F
+
+
+
+
+
+; data - align on even address
+@
+.SPARE.               +0L
+.MAXPOS.              B01111111111111111111111111111111111L
+

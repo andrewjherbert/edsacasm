@@ -1,39 +1,12 @@
-; GENERIC TEST
-
-        T .SPARE. D
-        E .L1. F
-        G .L1. F
+.START.		H .PATTERN1. D 	;
+	        X D
+			H .PATTERN2. F	;
+			;Z F
+			E .START. F		; loop back
+			G .START. F
+			Z F
 
 @
-.PATT1.               B10101010101010101010101010101010101L
-
-.L1.    X D
-	    T .SPARE. D
-        A .PATT1. D
-        E .L1. F
-        G .L1. F
-.L2.    Z F
-
-
-
-
-
-; data - align on even address
-@
-
-.SPARE.               +12345L
-.ZERO.                +0L
-.MINUS1.              -1L
-.PLUS1.               +1L
-                      B11111111111111111111111111111111111L
-                      +4L
-
-
-
-
-; E ok on +1
-; E ok on -1
-; E ok on +0
-; G ok on +0
-; G ok on +1
+.PATTERN1.	B11111011110111011010001110011100111L
+.PATTERN2.  B1001001110001001
 

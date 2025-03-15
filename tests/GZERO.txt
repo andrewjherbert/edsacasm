@@ -1,0 +1,17 @@
+; Test G with +0 also tests E +0
+
+
+.L1.    T .SPARE. D     ; clear Acc
+        G .L2. F        ; should skip
+        E .L1. F        ; should loop
+.L2.    Z F
+
+
+
+
+
+; data - align on even address
+@
+
+.SPARE.               +0
+

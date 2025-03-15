@@ -1,0 +1,22 @@
+; Test E with MAXNEG - also checks G MAXNEG
+
+X 0 D X 1 D X 2 D
+
+.L1.    T .SPARE. D     ; clear Acc
+        A .MAXNEG. D    ; load MAXNEG
+        E .L1. F        ; should skip to next
+        G .L1. F        ; should loop
+.L2.    Z F
+
+
+
+
+
+
+; data - align on even address
+@
+
+.SPARE.               +8 +9
+.MAXNEG.              B10000000000000000000000000000000000L
++12 +13 +14 +15 +16 +17 +18 +19 +20 +21 +22 +23 +24
++25 +26 +27 +28 +29 +30 +31

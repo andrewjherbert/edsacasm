@@ -1,4 +1,5 @@
 :: Assemble test files
+echo Boo
 python3 edsacasm.py tests/nigel2.txt >tests/nigel2.dat
 python3 edsacasm.py tests/nigel3.txt >tests/nigel3.dat
 python3 edsacasm.py tests/nigel7.txt >tests/nigel7.dat
@@ -31,3 +32,9 @@ python3 edsacasm.py tests/ztest.txt >tests/ztest.dat
 python3 edsacasm.py tests/htest.txt >tests/htest.dat
 python3 edsacasm.py tests/tsubroutine.txt >tests/tsubroutine.dat
 python3 edsacasm.py tests/temp.txt >tests/temp.dat
+python3 edsacasm.py tests/EZERO.txt >tests/EZERO.dat
+python3 edsacasm.py tests/EPOS.txt >tests/EPOS.dat
+python3 edsacasm.py tests/ENEG.txt >tests/ENEG.dat
+python3 edsacasm.py tests/GZERO.txt >tests/GZERO.dat
+python3 edsacasm.py tests/GPOS.txt >tests/GPOS.dat
+python3 edsacasm.py tests/GNEG.txt >tests/GNEG.dat

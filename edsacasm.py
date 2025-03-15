@@ -1,4 +1,4 @@
-# EDSAC Test Program Assembler - Andrew Herbert - 17 December 2023
+# EDSAC Test Program Assembler - Andrew Herbert - 14 March 2025
 
 # Generates binary images for loading into the bottom EDSAC store tank
 # (locations 0-32) using Tom Toth's SSI unit.
@@ -314,7 +314,7 @@ def address(f, i, p):
                 #print(name, "found")
                 store[cpa] += (symbols[name] << 1)
             else:
-                syntaxError(f, "undefined label - " + name)
+                syntaxError(f, "undefined label - ." + name + ".")
         return j
     elif f[i] == '#':
         return relative(f, i+1, p)
@@ -365,9 +365,12 @@ def skipSpace(f, i):
 def syntaxError(f, reason):
     global lineNo, lineStart
     msg = "Error on line " + str(lineNo) + ": " + reason + '\n'
-    lineEnd = f.index('\n', lineStart)
-    msg = msg + f[lineStart:lineEnd]
-    fail(msg)
+    try:
+    	lineEnd = f.index('\n', lineStart)
+    	text = f[lineStart:lineEnd]
+    except:
+    	text = f[lineStart:]
+    fail(msg + text)
 
  # ---- dumpStore, listStore ---- #
 
